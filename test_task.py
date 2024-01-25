@@ -76,7 +76,7 @@ class TestTask(unittest.TestCase):
 
         Task(self.workspace, self.environment)
 
-        # If the task was created then the requirment file was found.
+        # If the task was created then the requirement file was found.
         self.assertTrue(True)
 
     def test_get_target_requirement_name(self):
