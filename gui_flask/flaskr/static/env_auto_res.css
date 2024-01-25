@@ -3,16 +3,10 @@
     color: black;
 }
 
-#env_auto_res_req_status {
-    background-color: white;
-    margin: 10px 0;
-    padding: 5px;
-}
-
-#env_auto_res_req_status.req_fulfilled {
+.req_fulfilled {
     color: green;
 }
 
-#env_auto_res_req_status.req_not_fulfilled {
+.req_not_fulfilled {
     color: red;
 }

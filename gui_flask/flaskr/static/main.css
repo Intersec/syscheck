@@ -18,14 +18,15 @@ body {
 
 /* Generic objects */
 
-/* *** Collapsible */
+/* *** Tile */
 
-.collapsible {
+.tile {
     background-color: white;
-    /* border: 1px solid grey; */
     margin: 10px 0;
     padding: 5px;
 }
+
+/* *** Collapsible */
 
 .collapsible > div {
     margin-left: 40px;
