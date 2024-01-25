@@ -1,11 +1,16 @@
 {% extends 'base.html' %}
+{% from 'base.html' import render_collapsible_element with context %}
+
+{% block links %}
+<link rel="stylesheet" href="{{ url_for('static', filename='env_tree.css') }}">
+{% endblock %}
 
 {% block header %}
-  <h1>{% block title %}Environment tree{% endblock %}</h1>
+<h1>{% block title %}Environment tree{% endblock %}</h1>
 {% endblock %}
 
 {% block content %}
-  <ul>
-      <li>Tree</li>
-  </ul>
+<div id="env_tree">
+    {{ tree_html }}
+</div>
 {% endblock %}

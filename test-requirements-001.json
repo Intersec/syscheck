@@ -167,4 +167,11 @@
     "label": "Automatic check returns 'None'",
     "dependencies": "TEST_TASK_001__REQ_FALSE",
     "automatic_check": [ "generic_tools.none" ]
+}, {
+    "id": "TEST_TASK_001__REQ_DEP_COMPLEX_EACH_2",
+    "label": "Dependencies are a complex list",
+    "dependencies": [ "each",
+                      [ "any", "TEST_TASK_001__REQ_FALSE", "TEST_TASK_001__REQ_DEP_AND_CHECK_TRUE" ],
+                      [ "each", "TEST_TASK_001__REQ_TRUE", "TEST_TASK_001__REQ_DEP_FALSE" ] ],
+    "automatic_check": [ "generic_tools.true" ]
 }]

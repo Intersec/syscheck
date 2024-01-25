@@ -1,0 +1,32 @@
+#env_tree .env_req {
+    margin: 5px 0;
+    padding: 5px;
+    border: 1px solid grey;
+    border-radius: 5px;
+    background-color: white;
+}
+
+#env_tree .env_req > div {
+    margin-left: 20px;
+    position: relative;
+}
+
+#env_tree fieldset {
+    padding: 0 0 5px 10px;
+}
+
+#env_tree .env_req.req_fulfilled > label {
+    color: green;
+}
+
+#env_tree .env_req.req_not_fulfilled > label {
+    color: red;
+}
+
+#env_tree fieldset.req_fulfilled > legend {
+    color: green;
+}
+
+#env_tree fieldset.req_not_fulfilled > legend {
+    color: red;
+}
