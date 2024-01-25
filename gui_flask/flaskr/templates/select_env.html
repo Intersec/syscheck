@@ -8,7 +8,7 @@
 
 {% block content %}
 
-{% call render_collapsible_element("select_env", "Select environment") %}
+{% call render_collapsible_element("select_env", "select_env", "Select environment") %}
 <form>
     <ul>
         <li>
@@ -25,7 +25,7 @@
 </form>
 {% endcall %}
 
-{% call render_collapsible_element("known_task", "New environment with a known task") %}
+{% call render_collapsible_element("known_task", "known_task", "New environment with a known task") %}
 <form>
     <ul>
         <li>
@@ -49,7 +49,7 @@
 </form>
 {% endcall %}
 
-{% call render_collapsible_element("create_env", "Create environment") %}
+{% call render_collapsible_element("create_env", "create_env", "Create environment") %}
 <form>
     <ul>
         <li>
@@ -65,7 +65,7 @@
 </form>
 {% endcall %}
 
-{% call render_collapsible_element("forget_env", "Forget current environment") %}
+{% call render_collapsible_element("forget_env", "forget_env", "Forget current environment") %}
 <form>
     <ul>
         <li>

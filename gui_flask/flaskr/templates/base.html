@@ -1,7 +1,7 @@
-{% macro render_collapsible_element(collapse_name, label) -%}
+{% macro render_collapsible_element(collapse_name, arg_unfold, label) -%}
 <div class="collapsible">
     <input type="checkbox" id="collapse_{{ collapse_name }}"
-           {% if request.args.get(collapse_name) %}checked{% endif %} />
+           {% if arg_unfold == True or request.args.get(arg_unfold) %}checked{% endif %} />
     <label for="collapse_{{ collapse_name }}">{{ label }}</label>
     <div>
         {{ caller() }}

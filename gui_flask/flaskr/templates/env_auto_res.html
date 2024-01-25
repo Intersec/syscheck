@@ -1,3 +1,6 @@
+{% extends 'base.html' %}
+{% from 'base.html' import render_collapsible_element with context %}
+
 {% macro render_manual_resolution(id, resolution) -%}
   <span class="code_block">{{ resolution["description"] | format_description(task) }}</span>
 {%- endmacro %}
@@ -65,7 +68,20 @@
 {%- endmacro %}
 
 {% macro render_resolution(id, resolution) -%}
-  {% call render_collapsible_element(id, resolution["label"]) %}
+  {% set submit_button_name = None %}
+  {% if resolution["method"] == "ui.manual" %}
+    {# Always display manuel resolutions #}
+    {% set submit_button_name = True %}
+  {% elif request.args.get("res_id") == id %}
+    {% if resolution["method"] == "automatic" %}
+      {% set submit_button_name = "run_auto_res" %}
+    {% elif resolution["method"] == "ui.user_input" %}
+      {% set submit_button_name = "set_value" %}
+    {% elif resolution["method"] == "ui.user_select" %}
+      {% set submit_button_name = "set_value" %}
+    {% endif %}
+  {% endif %}
+  {% call render_collapsible_element(id, submit_button_name, resolution["label"]) %}
     {% if resolution["method"] == "ui.manual" %}
       {{ render_manual_resolution(id, resolution) }}
     {% elif resolution["method"] == "automatic" %}
@@ -81,9 +97,6 @@
     {% endif %}
   {% endcall %}
 {%- endmacro %}
-
-{% extends 'base.html' %}
-{% from 'base.html' import render_collapsible_element with context %}
 
 {% block links %}
   <link rel="stylesheet" href="{{ url_for('static', filename='env_auto_res.css') }}">
