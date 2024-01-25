@@ -151,3 +151,23 @@ class TestTask(unittest.TestCase):
         task = self._get_task("task-001")
         with self.assertRaises(NotBool):
             task.check_requirement_status("TEST_TASK_001__REQ_NO_RESULT")
+
+    def test_dependecies_checked_using_requirement_object(self):
+        task = self._get_task("task-001")
+        req = task.requirements["TEST_TASK_001__REQ_DEP_TRUE"]
+        self.assertTrue(task.check_requirement_dependencies(req))
+
+    def test_dependecies_not_checked_using_requirement_object(self):
+        task = self._get_task("task-001")
+        req = task.requirements["TEST_TASK_001__REQ_DEP_FALSE"]
+        self.assertFalse(task.check_requirement_dependencies(req))
+
+    def test_dependecies_checked_using_requirement_name(self):
+        task = self._get_task("task-001")
+        req_name = "TEST_TASK_001__REQ_DEP_TRUE"
+        self.assertTrue(task.check_requirement_dependencies(req_name))
+
+    def test_dependecies_not_checked_using_requirement_name(self):
+        task = self._get_task("task-001")
+        req_name = "TEST_TASK_001__REQ_DEP_FALSE"
+        self.assertFalse(task.check_requirement_dependencies(req_name))
