@@ -109,11 +109,14 @@ class Task():
                     return False
         return True
 
-    def apply_automatic_resolution(self, req_arg):
-        """Apply the requirement's automatic resolution.
+    def apply_automatic_resolution(self, req_arg, res_id):
+        """Apply a requirement's automatic resolution.
 
         The req_arg parameter can be the requirement's name or the requirement
         itself.
+
+        The res_id parameter is the resolution identifier specified as the
+        resolution's key in the configuration.
 
         """
 
@@ -122,16 +125,31 @@ class Task():
         else:
             req = req_arg
 
+        req_id = req['id']
+
         if not self.check_requirement_dependencies(req):
             raise AssertionError(
-                f"Requirement '{req['id']}' dependencies are not ready")
+                f"Requirement '{req_id}' dependencies are not ready")
 
         if self.check_requirement_status(req):
             # Requirement's already fulfilled, nothing to do
             return
 
-        auto_res = req["automatic_resolution"]
-        res = requirements.solve_element(self, req, auto_res)
+        if res_id not in req["resolution"].keys():
+            raise InvalidConfiguration(
+                f"Requirement resolution '{req_id}.{res_id}' do not exists")
+
+        auto_res = req["resolution"][res_id]
+
+        if auto_res["method"] != "automatic":
+            raise InvalidConfiguration(
+                f"Requirement resolution '{req_id}.{res_id}' not automatic")
+
+        if "steps" not in auto_res.keys():
+            raise InvalidConfiguration(
+                f"Requirement resolution '{req_id}.{res_id}' has no steps")
+
+        res = requirements.solve_element(self, req, auto_res["steps"])
 
     def check_requirement_status(self, req_arg):
         def run_requirement_auto_check(req):

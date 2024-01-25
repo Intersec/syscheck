@@ -93,16 +93,37 @@
         [ "db_tools.get_value", "env", "TEST_TASK_001__SIMPLE_AUTO_RES_REPO_PATH" ],
         [ "db_tools.get_value", "env", "TEST_TASK_001__SIMPLE_AUTO_RES_REPO_BRANCH" ]
     ],
-    "automatic_resolution": [
-        "git_tools.checkout_branch",
-        [ "db_tools.get_value", "env", "TEST_TASK_001__SIMPLE_AUTO_RES_REPO_PATH" ],
-        [ "db_tools.get_value", "env", "TEST_TASK_001__SIMPLE_AUTO_RES_REPO_BRANCH" ]
-    ]
+    "resolution": {
+        "auto": {
+            "label": "Automatic resolution",
+            "method": "automatic",
+            "steps": [
+                "git_tools.checkout_branch",
+                [ "db_tools.get_value", "env", "TEST_TASK_001__SIMPLE_AUTO_RES_REPO_PATH" ],
+                [ "db_tools.get_value", "env", "TEST_TASK_001__SIMPLE_AUTO_RES_REPO_BRANCH" ]
+            ]
+        }
+    }
 }, {
     "id": "TEST_TASK_001__AUTO_RES_DB",
     "label": "Automatic resolution and automatic check use different database key",
     "automatic_check": [ "db_tools.is_set", "env", "key001" ],
-    "automatic_resolution": [ "db_tools.set_value", "env", "key002", "value002" ]
+    "resolution": {
+        "auto": {
+            "label": "Automatic resolution",
+            "method": "automatic",
+            "steps": [ "db_tools.set_value", "env", "key002", "value002" ]
+        },
+        "manual": {
+            "label": "Manual resolution",
+            "method": "manual",
+            "description": "This is a description of how to fulfill this requirement"
+        },
+        "auto_no_steps": {
+            "label": "Automatic resolution without steps",
+            "method": "automatic"
+        }
+    }
 }, {
     "id": "TEST_TASK_001__REQ_DEP_BUT_NO_RESULT",
     "label": "Automatic check returns 'None'",

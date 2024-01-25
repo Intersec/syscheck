@@ -194,14 +194,14 @@ class TestTask(unittest.TestCase):
         req_id = "TEST_TASK_001__SIMPLE_AUTO_RES"
         expected_msg = f"Requirement '{req_id}' dependencies are not ready"
         with self.assertRaisesRegex(AssertionError, expected_msg):
-            task.apply_automatic_resolution(req_id)
+            task.apply_automatic_resolution(req_id, "auto")
 
     def test_auto_res_using_req_obj_with_dependencies_not_met(self):
         task = self._get_task("task-001")
         req = task.requirements["TEST_TASK_001__SIMPLE_AUTO_RES"]
         expected_msg = f"Requirement '{req['id']}' dependencies are not ready"
         with self.assertRaisesRegex(AssertionError, expected_msg):
-            task.apply_automatic_resolution(req["id"])
+            task.apply_automatic_resolution(req["id"], "auto")
 
     def test_auto_check_with_dependencies_not_met(self):
         task = self._get_task("task-001")
@@ -249,7 +249,7 @@ class TestTask(unittest.TestCase):
                                       [ repo_path, source_branch ])
             assert git_tools.is_branch_checked_out(
                 None, None, [ repo_path, source_branch ]), "Invalid branch"
-            task.apply_automatic_resolution(req)
+            task.apply_automatic_resolution(req, "auto")
             self.assertTrue(
                 git_tools.is_branch_checked_out(
                     None, None, [ repo_path, target_branch ]))
@@ -268,6 +268,36 @@ class TestTask(unittest.TestCase):
         db = task.get_env_key_value_db()
         db.set_value("key001", "value001")
 
-        task.apply_automatic_resolution("TEST_TASK_001__AUTO_RES_DB")
+        task.apply_automatic_resolution("TEST_TASK_001__AUTO_RES_DB", "auto")
 
         self.assertFalse(db.is_set("key002"))
+
+    def test_auto_res_with_wrong_method(self):
+        task = self._get_task("task-001")
+
+        req_id = "TEST_TASK_001__AUTO_RES_DB"
+        res_id = "manual"
+        with self.assertRaisesRegex(
+                InvalidConfiguration,
+                f"Requirement resolution '{req_id}.{res_id}' not automatic"):
+            task.apply_automatic_resolution(req_id, res_id)
+
+    def test_auto_res_with_no_steps(self):
+        task = self._get_task("task-001")
+
+        req_id = "TEST_TASK_001__AUTO_RES_DB"
+        res_id = "auto_no_steps"
+        with self.assertRaisesRegex(
+                InvalidConfiguration,
+                f"Requirement resolution '{req_id}.{res_id}' has no steps"):
+            task.apply_automatic_resolution(req_id, res_id)
+
+    def test_auto_res_with_invalid_id(self):
+        task = self._get_task("task-001")
+
+        req_id = "TEST_TASK_001__AUTO_RES_DB"
+        res_id = "key_do_not_exists"
+        with self.assertRaisesRegex(
+                InvalidConfiguration,
+                f"Requirement resolution '{req_id}.{res_id}' do not exists"):
+            task.apply_automatic_resolution(req_id, res_id)
