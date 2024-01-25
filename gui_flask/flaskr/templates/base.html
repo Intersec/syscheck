@@ -1,12 +1,12 @@
 {% macro render_collapsible_element(collapse_name, arg_unfold, label) -%}
-<div class="tile collapsible">
+  <div class="tile collapsible">
     <input type="checkbox" id="collapse_{{ collapse_name }}"
            {% if arg_unfold == True or request.args.get(arg_unfold) %}checked{% endif %} />
-    <label for="collapse_{{ collapse_name }}">{{ label }}</label>
-    <div>
-        {{ caller() }}
-    </div>
-</div>
+           <label for="collapse_{{ collapse_name }}">{{ label }}</label>
+           <div>
+             {{ caller() }}
+           </div>
+  </div>
 {%- endmacro %}
 
 {# TODO: the name should not be the ID. A name is not required to be unique
@@ -14,14 +14,10 @@ and in some pages we have multiple inputs from different forms that can have
 the same name #}
 
 {% macro render_input_text(form_id, submit_button_name, name, label) -%}
-{% with input_id = form_id + "_" + name %}
-<label for="{{input_id}}">{{label}}</label>
-<input id="{{input_id}}"
-       {% if request.args.get(submit_button_name) %}
-       value="{{ request.args.get(name) }}"
-       {% endif %}
-       name="{{name}}" />
-{% endwith %}
+  {% with input_id = form_id + "_" + name %}
+    <label for="{{input_id}}">{{label}}</label>
+    <input id="{{input_id}}" {% if request.args.get(submit_button_name) %} value="{{ request.args.get(name) }}" {% endif %} name="{{name}}" />
+  {% endwith %}
 {%- endmacro %}
 
 <!doctype html>
@@ -29,62 +25,62 @@ the same name #}
 <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
 {% block links %}{% endblock %}
 <nav>
-    <ul>
-        {% if session["env_name"] %}
-        <li class="current_env">
-            <span class="current_env_label">Current environment</span>
-            <span class="current_env_name">
-                {{ session["env_name"] }}
-            </span>
-        </li>
-        <li><a href="{{ url_for('env.page_env_tree') }}">Environment's tree</a></li>
-        {% endif %}
-        <li><a href="{{ url_for('select_env.page_select_env') }}">Change environment</a></li>
-        <li><a href="{{ url_for('db_tools.page_db_tools') }}">Database tools</a></li>
-        {% if g.environment %}
-        <li><a href="{{ url_for('env.tree') }}">Display requirements tree</a></li>
-        {% endif %}
-    </ul>
+  <ul>
+    {% if session["env_name"] %}
+      <li class="current_env">
+        <span class="current_env_label">Current environment</span>
+        <span class="current_env_name">
+          {{ session["env_name"] }}
+        </span>
+      </li>
+    <li><a href="{{ url_for('env.page_env_tree') }}">Environment's tree</a></li>
+  {% endif %}
+  <li><a href="{{ url_for('select_env.page_select_env') }}">Change environment</a></li>
+    <li><a href="{{ url_for('db_tools.page_db_tools') }}">Database tools</a></li>
+    {% if g.environment %}
+      <li><a href="{{ url_for('env.tree') }}">Display requirements tree</a></li>
+    {% endif %}
+  </ul>
 </nav>
 <section class="content">
-    <header>
-        {% block header %}{% endblock %}
-    </header>
-    {% with errors = get_flashed_messages(category_filter=["error"]) %}
+  <header>
+    {% block header %}{% endblock %}
+  </header>
+  {% with errors = get_flashed_messages(category_filter=["error"]) %}
     {% if errors %}
-    <div class="flash flash-error">
+      <div class="flash flash-error">
         <span>Error:</span>
         <ul>
-            {% for message in errors %}
+          {% for message in errors %}
             <li>{{ message }}</li>
-            {% endfor %}
+          {% endfor %}
         </ul>
-    </div>
+      </div>
     {% endif %}
-    {% endwith %}
-    {% with warnings = get_flashed_messages(category_filter=["warning"]) %}
+  {% endwith %}
+  {% with warnings = get_flashed_messages(category_filter=["warning"]) %}
     {% if warnings %}
-    <div class="flash flash-warning">
+      <div class="flash flash-warning">
         <span>Warning:</span>
         <ul>
-            {% for message in warnings %}
+          {% for message in warnings %}
             <li>{{ message }}</li>
-            {% endfor %}
+          {% endfor %}
         </ul>
-    </div>
+      </div>
     {% endif %}
-    {% endwith %}
-    {% with notices = get_flashed_messages(category_filter=["notice"]) %}
+  {% endwith %}
+  {% with notices = get_flashed_messages(category_filter=["notice"]) %}
     {% if notices %}
-    <div class="flash flash-notice">
+      <div class="flash flash-notice">
         <span>Notice:</span>
         <ul>
-            {% for message in notices %}
+          {% for message in notices %}
             <li>{{ message }}</li>
-            {% endfor %}
+          {% endfor %}
         </ul>
-    </div>
+      </div>
     {% endif %}
-    {% endwith %}
-    {% block content %}{% endblock %}
+  {% endwith %}
+  {% block content %}{% endblock %}
 </section>

@@ -1,15 +1,15 @@
 {% extends 'base.html' %}
 
 {% block links %}
-<link rel="stylesheet" href="{{ url_for('static', filename='env_tree.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='env_tree.css') }}">
 {% endblock %}
 
 {% block header %}
-<h1>{% block title %}Environment tree{% endblock %}</h1>
+  <h1>{% block title %}Environment tree{% endblock %}</h1>
 {% endblock %}
 
 {% block content %}
-<div id="env_tree" class="tile">
+  <div id="env_tree" class="tile">
     {{ tree_html }}
-</div>
+  </div>
 {% endblock %}
