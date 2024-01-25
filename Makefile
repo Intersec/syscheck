@@ -12,7 +12,10 @@ TESTS := \
 
 all: tests
 
-tests: ${TESTS}
+# Run tests from all test files
+tests:
+	python3 -m unittest ${TESTS}
 
+# Run tests for a single test file
 test_%:
 	python3 -m unittest $@
