@@ -1,4 +1,5 @@
 import os
+import shutil
 import tempfile
 
 def directory_exists(task, requirement, args):
@@ -90,3 +91,43 @@ def mkdir(task, requirement, args):
     path = args[0]
 
     os.mkdir(path)
+
+def copy_file(task, requirement, args):
+    if len(args) != 2:
+        usage = "copy_file <src> <dst>"
+        raise ValueError(f"Not enough arguments: {usage}")
+
+    src = args[0]
+    dst = args[1]
+
+    shutil.copy(src, dst)
+
+def set_file_mode(task, requirement, args):
+    if len(args) != 2:
+        usage = "set_file_mode <file> <mode str>"
+        raise ValueError(f"Not enough arguments: {usage}")
+
+    path = args[0]
+    mode_str = args[1]
+
+    mode_int = int(mode_str, 8)
+
+    os.chmod(path, mode_int)
+
+def test_file_access(task, requirement, args):
+    if len(args) != 2:
+        usage = "test_file_access <file> <mode>"
+        raise ValueError(f"Not enough arguments: {usage}")
+
+    path = args[0]
+    mode_arg = args[1]
+
+    mode = 0
+    if "R" in mode_arg:
+        mode = mode | os.R_OK
+    if "W" in mode_arg:
+        mode = mode | os.W_OK
+    if "X" in mode_arg:
+        mode = mode | os.X_OK
+
+    os.access(path, mode)

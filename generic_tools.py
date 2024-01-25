@@ -18,3 +18,13 @@ def false(task, requirement, args):
 
 def none(task, requirement, args):
     return None
+
+def compare(task, requirement, args):
+    if len(args) != 2:
+        usage = "compare <first value> <second value>"
+        raise ValueError(f"Not enough arguments: {usage}")
+
+    v1 = args[0]
+    v2 = args[1]
+
+    return v1 == v2
