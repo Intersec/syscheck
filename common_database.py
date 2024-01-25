@@ -1,12 +1,14 @@
 
 import json
+import os
 
 class CommonDatabase():
 
     def __init__(self, db_path):
         self.db_path = db_path
-        with open(self.db_path, 'w') as file:
-            file.write("{}")
+        if not os.path.exists(self.db_path):
+            with open(self.db_path, 'w') as file:
+                file.write("{}")
 
     def save(self, content):
         with open(self.db_path, "w") as f:

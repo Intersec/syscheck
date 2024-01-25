@@ -64,6 +64,18 @@ class TestKeyValueDatabase(unittest.TestCase):
         self.database.remove_key("key01")
         self.assertEqual(self.database.is_set("key01"), False)
 
+    def test_reload(self):
+        """Test database content after loading it
+
+        On bug was encountered where, when creating the database object, the
+        content of the database were dropped.
+
+        """
+        self.database.set_value("key01", "value01")
+        del self.database
+        self.database = KeyValueDatabase(self.db_path)
+        self.assertEqual(self.database.get_value("key01"), "value01")
+
 # logging.basicConfig(level=logging.INFO)
 
 if __name__ == '__main__':
