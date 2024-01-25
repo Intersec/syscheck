@@ -102,6 +102,26 @@ def add_one_value(task, requirement, args):
     db = _get_collection_db(task, arg_db)
     db.add_value(arg_collection, arg_value)
 
+def add_values(task, requirement, args):
+    arg_db = "env"
+    arg_collection = requirement["id"]
+
+    if len(args) < 1:
+        raise ValueError(
+            "Not enough arguments: add_one_value [db] [collection] value")
+
+    arg_value = args.pop()
+
+    if len(args) >= 1:
+        arg_db = args.pop(0)
+
+    if len(args) >= 1:
+        arg_collection = args.pop(0)
+
+    db = _get_collection_db(task, arg_db)
+    for value in arg_value:
+        db.add_value(arg_collection, arg_value)
+
 def remove_one_value(task, requirement, args):
     arg_db = "env"
     arg_collection = requirement["id"]
