@@ -178,3 +178,10 @@ class TestTask(unittest.TestCase):
         self.assertTrue(
             task.check_requirement_status(
                 "TEST_TASK_001__REQ_DEP_AND_CHECK_TRUE"))
+
+    def test_auto_check_returns_none(self):
+        self.environment.key_value_db.set_value(
+            "task_conf_path", self.task_cfg_path["task-001"])
+        task = Task(self.workspace, self.environment)
+        with self.assertRaises(NotBool):
+            task.check_requirement_status("TEST_TASK_001__REQ_NO_RESULT")
