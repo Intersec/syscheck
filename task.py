@@ -86,19 +86,19 @@ class Task():
 
         return req
 
+    def check_requirement_dependencies(self, req):
+        if "dependencies" in req.keys():
+            dependencies = req["dependencies"]
+            if not type(dependencies) == list:
+                msg = f"Dependencies for '{req['id']}' is not an array"
+                raise InvalidConfiguration(msg)
+
+            for dep in dependencies:
+                if not self.check_requirement_status(dep):
+                    return False
+        return True
+
     def check_requirement_status(self, req_name):
-        def check_requirement_dependencies(req):
-            if "dependencies" in req.keys():
-                dependencies = req["dependencies"]
-                if not type(dependencies) == list:
-                    msg = f"Dependencies for '{req['id']}' is not an array"
-                    raise InvalidConfiguration(msg)
-
-                for dep in dependencies:
-                    if not self.check_requirement_status(dep):
-                        return False
-            return True
-
         def run_requirement_auto_check(req):
             auto_check = req["automatic_check"]
             res = requirements.solve_element(self, req, auto_check)
@@ -114,7 +114,7 @@ class Task():
 
         req = self.get_requirement(req_name)
 
-        if not check_requirement_dependencies(req):
+        if not self.check_requirement_dependencies(req):
             return False
 
         if not run_requirement_auto_check(req):
