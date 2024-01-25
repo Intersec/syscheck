@@ -41,7 +41,7 @@ def format_description(text, task):
             pattern_stop = None
         elif (text[i] == "|" and
               not test_prev_char(text, i, "\\") and
-              pattern_start):
+              pattern_start != None):
             pattern_split = i
         elif (text[i] == "]" and
               not test_prev_char(text, i, "\\") and

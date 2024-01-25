@@ -21,6 +21,15 @@ class TestGuiTools(unittest.TestCase):
     def tearDown(self):
         pass
 
+    def test_format_description_no_other_text(self):
+        workspace = test_common.FakeWorkspace()
+        env = test_common.FakeEnvironment()
+        task = test_common.FakeTask(workspace, env)
+        task.get_env_key_value_db().set_value("name", "Léon")
+        description = "[<name>|env.name]"
+        new_description = gui_tools.format_description(description, task)
+        self.assertEqual(new_description, "Léon")
+
     def test_format_description_one_substitution(self):
         workspace = test_common.FakeWorkspace()
         env = test_common.FakeEnvironment()
