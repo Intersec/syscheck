@@ -49,6 +49,10 @@ def solve_element(task, requirement, element):
 
     """
 
+    # TODO: check behavior if one function returns a list, will the list be
+    # recursively solved?? Testing this would require a function for an
+    # automatic check or an automatic resolution that uses a list.
+
     if len(element) == 0:
         return True
 
