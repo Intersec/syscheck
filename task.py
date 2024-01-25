@@ -159,10 +159,6 @@ class Task():
 
         req_id = req['id']
 
-        if not self.check_requirement_dependencies(req):
-            raise AssertionError(
-                f"Requirement '{req_id}' dependencies are not ready")
-
         if res_id not in req["resolution"].keys():
             raise InvalidConfiguration(
                 f"Requirement resolution '{req_id}.{res_id}' do not exists")
@@ -176,6 +172,11 @@ class Task():
         if "steps" not in auto_res.keys():
             raise InvalidConfiguration(
                 f"Requirement resolution '{req_id}.{res_id}' has no steps")
+
+        if ("safe" not in auto_res) or (auto_res["safe"] is False):
+            if not self.check_requirement_dependencies(req):
+                raise AssertionError(
+                    f"Requirement '{req_id}' dependencies are not ready")
 
         res = requirements.solve_element(self, req, auto_res["steps"])
 

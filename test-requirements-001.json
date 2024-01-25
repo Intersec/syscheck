@@ -113,6 +113,52 @@
     "label": "Test db_tools.is_set",
     "automatic_check": [ "db_tools.is_set" ]
 }, {
+    "id": "TEST_TASK_001__SAFE_AUTO_RES_WITH_DEPENDENCY_NOT_MET",
+    "label": "Dependency is not met",
+    "dependencies": "TEST_TASK_001__REQ_FALSE",
+    "resolution": {
+        "safe_res": {
+            "label": "Safe resolution",
+            "method": "automatic",
+            "steps": [ "db_tools.set_value", "env", "key001", "value001" ],
+            "safe": true
+        },
+        "not_safe_res": {
+            "label": "Not safe resolution",
+            "method": "automatic",
+            "steps": [ "db_tools.set_value", "env", "key001", "value001" ],
+            "safe": false
+        },
+        "safety_not_set": {
+            "label": "Safety not set",
+            "method": "automatic",
+            "steps": [ "db_tools.set_value", "env", "key001", "value001" ]
+        }
+    }
+}, {
+    "id": "TEST_TASK_001__SAFE_AUTO_RES_WITH_DEPENDENCY_MET",
+    "label": "Dependency is met",
+    "dependencies": "TEST_TASK_001__REQ_TRUE",
+    "resolution": {
+        "safe_res": {
+            "label": "Safe resolution",
+            "method": "automatic",
+            "steps": [ "db_tools.set_value", "env", "key001", "value001" ],
+            "safe": true
+        },
+        "not_safe_res": {
+            "label": "Not safe resolution",
+            "method": "automatic",
+            "steps": [ "db_tools.set_value", "env", "key001", "value001" ],
+            "safe": false
+        },
+        "safety_not_set": {
+            "label": "Safety not set",
+            "method": "automatic",
+            "steps": [ "db_tools.set_value", "env", "key001", "value001" ]
+        }
+    }
+}, {
     "id": "TEST_TASK_001__SIMPLE_AUTO_RES_REPO_PATH",
     "label": "Repository path is known",
     "automatic_check": [ "db_tools.is_set" ]

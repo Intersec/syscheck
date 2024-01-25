@@ -303,6 +303,64 @@ class TestTask(unittest.TestCase):
         finally:
             tmp_dir.cleanup()
 
+    def test_safe_res_with_unmet_dependency(self):
+        task = self._get_task("task-001")
+        req_id = "TEST_TASK_001__SAFE_AUTO_RES_WITH_DEPENDENCY_NOT_MET"
+        res_id = "safe_res"
+        db = task.get_env_key_value_db()
+
+        task.apply_automatic_resolution(req_id, res_id)
+
+        self.assertEqual(db.get_value("key001"), "value001")
+
+    def test_not_safe_res_with_unmet_dependency(self):
+        task = self._get_task("task-001")
+        req_id = "TEST_TASK_001__SAFE_AUTO_RES_WITH_DEPENDENCY_NOT_MET"
+        res_id = "not_safe_res"
+
+        expected_msg = f"Requirement '{req_id}' dependencies are not ready"
+        with self.assertRaisesRegex(AssertionError, expected_msg):
+            task.apply_automatic_resolution(req_id, res_id)
+
+    def test_res_without_safety_with_unmet_dependency(self):
+        task = self._get_task("task-001")
+        req_id = "TEST_TASK_001__SAFE_AUTO_RES_WITH_DEPENDENCY_NOT_MET"
+        res_id = "safety_not_set"
+
+        expected_msg = f"Requirement '{req_id}' dependencies are not ready"
+        with self.assertRaisesRegex(AssertionError, expected_msg):
+            task.apply_automatic_resolution(req_id, res_id)
+
+    def test_safe_res_with_met_dependency(self):
+        task = self._get_task("task-001")
+        req_id = "TEST_TASK_001__SAFE_AUTO_RES_WITH_DEPENDENCY_MET"
+        res_id = "safe_res"
+        db = task.get_env_key_value_db()
+
+        task.apply_automatic_resolution(req_id, res_id)
+
+        self.assertEqual(db.get_value("key001"), "value001")
+
+    def test_not_safe_res_with_met_dependency(self):
+        task = self._get_task("task-001")
+        req_id = "TEST_TASK_001__SAFE_AUTO_RES_WITH_DEPENDENCY_MET"
+        res_id = "not_safe_res"
+        db = task.get_env_key_value_db()
+
+        task.apply_automatic_resolution(req_id, res_id)
+
+        self.assertEqual(db.get_value("key001"), "value001")
+
+    def test_res_without_safety_with_met_dependency(self):
+        task = self._get_task("task-001")
+        req_id = "TEST_TASK_001__SAFE_AUTO_RES_WITH_DEPENDENCY_MET"
+        res_id = "safety_not_set"
+        db = task.get_env_key_value_db()
+
+        task.apply_automatic_resolution(req_id, res_id)
+
+        self.assertEqual(db.get_value("key001"), "value001")
+
     def test_auto_res_with_wrong_method(self):
         task = self._get_task("task-001")
 
