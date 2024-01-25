@@ -86,7 +86,18 @@ class Task():
 
         return req
 
-    def check_requirement_dependencies(self, req):
+    def check_requirement_dependencies(self, req_arg):
+        """Check if the dependecies of the requirement are met.
+
+        The req_arg parameter can be the requirement's name or the requirement
+        itself.
+
+        """
+        if type(req_arg) is str:
+            req = self.get_requirement(req_arg)
+        else:
+            req = req_arg
+
         if "dependencies" in req.keys():
             dependencies = req["dependencies"]
             if not type(dependencies) == list:
