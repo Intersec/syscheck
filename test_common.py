@@ -34,10 +34,11 @@ def get_temporary_filename():
     normally-closed when it is not accessed but it will make sure that
     the file is not removed yet.
 
-    This file is expected to be deleted when the test ends. It could
-    be removed like this:
-    >>> os.unlink(filename)
+    This file is expected to be deleted when the test ends. It can be removed
+    like this: >>> os.unlink(filename)
+
     """
+
     f = tempfile.NamedTemporaryFile("w", delete=False)
     f.close()
     return f.name

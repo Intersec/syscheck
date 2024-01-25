@@ -8,6 +8,7 @@ def is_key_set(task, requirement, args):
     if len(args) >= 1:
         arg_env = args[0]
 
+    # TODO add test to check that default values are used (they are not!)
     if args[0] == "env":
         db = task.get_env_key_value_db()
     elif args[0] == "common":
