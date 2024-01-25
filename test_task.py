@@ -1,9 +1,11 @@
+import common
+import git_tools
 import os
-import unittest
-
-from task import Task, NotBool, InvalidConfiguration
 from requirements import InvalidElement
+from task import Task, NotBool, InvalidConfiguration
+import tempfile
 import test_common
+import unittest
 
 class TestTask(unittest.TestCase):
     @classmethod
@@ -171,3 +173,84 @@ class TestTask(unittest.TestCase):
         task = self._get_task("task-001")
         req_name = "TEST_TASK_001__REQ_DEP_FALSE"
         self.assertFalse(task.check_requirement_dependencies(req_name))
+
+    def test_dependecies_not_checked_using_requirement_name(self):
+        task = self._get_task("task-001")
+        req_name = "TEST_TASK_001__REQ_DEP_FALSE"
+        self.assertFalse(task.check_requirement_dependencies(req_name))
+
+    def test_auto_res_with_dependencies_not_met(self):
+        task = self._get_task("task-001")
+        req_id = "TEST_TASK_001__SIMPLE_AUTO_RES"
+        expected_msg = f"Requirement '{req_id}' dependencies are not ready"
+        with self.assertRaisesRegex(AssertionError, expected_msg):
+            task.apply_automatic_resolution(req_id)
+
+    def test_auto_res_using_req_obj_with_dependencies_not_met(self):
+        task = self._get_task("task-001")
+        req = task.requirements["TEST_TASK_001__SIMPLE_AUTO_RES"]
+        expected_msg = f"Requirement '{req['id']}' dependencies are not ready"
+        with self.assertRaisesRegex(AssertionError, expected_msg):
+            task.apply_automatic_resolution(req["id"])
+
+    def test_auto_res(self):
+        def initialize_repo(repo_dir):
+            """Initialize a directory with a git repository
+
+            If the repository doesn't have a valid commit, creating a branch
+            with 'git branch <branchname>' fails.
+
+            This function creates a git repository with a commit in an
+            existing directory to avoid this issue.
+
+            """
+            with open(f"{repo_dir}/README.md", 'w') as file:
+                file.write("Hello World!")
+
+            git_tools.run_git_command(repo_dir, "init")
+            git_tools.run_git_command(repo_dir, "add README.md")
+            git_tools.run_git_command(repo_dir, "commit -m 'Initial commit'")
+
+        task = self._get_task("task-001")
+        req = task.requirements["TEST_TASK_001__SIMPLE_AUTO_RES"]
+        db = task.get_env_key_value_db()
+        target_branch = "release-0.1"
+        source_branch = "release-0.2"
+
+        tmp_dir = tempfile.TemporaryDirectory()
+        repo_path = tmp_dir.name
+
+        try:
+            db.set_value("TEST_TASK_001__SIMPLE_AUTO_RES_REPO_PATH",
+                         repo_path)
+            db.set_value("TEST_TASK_001__SIMPLE_AUTO_RES_REPO_BRANCH",
+                         target_branch)
+            initialize_repo(repo_path);
+            git_tools.run_git_command(repo_path, f"branch '{target_branch}'")
+            git_tools.run_git_command(repo_path, f"branch '{source_branch}'")
+            git_tools.checkout_branch(None, None,
+                                      [ repo_path, source_branch ])
+            assert git_tools.is_branch_checked_out(
+                None, None, [ repo_path, source_branch ]), "Invalid branch"
+            task.apply_automatic_resolution(req)
+            self.assertTrue(
+                git_tools.is_branch_checked_out(
+                    None, None, [ repo_path, target_branch ]))
+        finally:
+            tmp_dir.cleanup()
+
+    def test_auto_res_with_auto_check_already_true(self):
+        """Test automatic resolution when automatic check returns true
+
+        When the automatic check succeed, the automatic resolution should not
+        apply.
+
+        """
+
+        task = self._get_task("task-001")
+        db = task.get_env_key_value_db()
+        db.set_value("key001", "value001")
+
+        task.apply_automatic_resolution("TEST_TASK_001__AUTO_RES_DB")
+
+        self.assertFalse(db.is_set("key002"))

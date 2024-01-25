@@ -75,4 +75,32 @@
     "id": "TEST_TASK_001__REQ_KV_DB_ACCESS",
     "label": "Test db_tools.is_set",
     "automatic_check": [ "db_tools.is_set" ]
+}, {
+    "id": "TEST_TASK_001__SIMPLE_AUTO_RES_REPO_PATH",
+    "label": "Repository path is known",
+    "automatic_check": [ "db_tools.is_set" ]
+}, {
+    "id": "TEST_TASK_001__SIMPLE_AUTO_RES_REPO_BRANCH",
+    "label": "Repository branch is known",
+    "automatic_check": [ "db_tools.is_set" ]
+}, {
+    "id": "TEST_TASK_001__SIMPLE_AUTO_RES",
+    "label": "Automatic resolution with a git repository",
+    "dependencies": [ "TEST_TASK_001__SIMPLE_AUTO_RES_REPO_PATH",
+                      "TEST_TASK_001__SIMPLE_AUTO_RES_REPO_BRANCH" ],
+    "automatic_check": [
+        "git_tools.is_branch_checked_out",
+        [ "db_tools.get_value", "env", "TEST_TASK_001__SIMPLE_AUTO_RES_REPO_PATH" ],
+        [ "db_tools.get_value", "env", "TEST_TASK_001__SIMPLE_AUTO_RES_REPO_BRANCH" ]
+    ],
+    "automatic_resolution": [
+        "git_tools.checkout_branch",
+        [ "db_tools.get_value", "env", "TEST_TASK_001__SIMPLE_AUTO_RES_REPO_PATH" ],
+        [ "db_tools.get_value", "env", "TEST_TASK_001__SIMPLE_AUTO_RES_REPO_BRANCH" ]
+    ]
+}, {
+    "id": "TEST_TASK_001__AUTO_RES_DB",
+    "label": "Automatic resolution and automatic check use different database key",
+    "automatic_check": [ "db_tools.is_set", "env", "key001" ],
+    "automatic_resolution": [ "db_tools.set_value", "env", "key002", "value002" ]
 }]
