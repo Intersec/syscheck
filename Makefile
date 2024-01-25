@@ -7,6 +7,7 @@ TESTS := \
 	test_workspace \
 	test_task \
 	test_requirements \
+	test_git_tools \
 
 all: tests
 
