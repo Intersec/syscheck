@@ -75,7 +75,7 @@ class TestRequirement(unittest.TestCase):
         task = self._get_task("task-001")
         req_id = "TEST_TASK_001__REQ_KV_DB_ACCESS"
         kv_db = task.get_env_key_value_db()
-        req = task.requirements["TEST_TASK_001__REQ_KV_DB_ACCESS"]
+        req = task.requirements[req_id]
 
         kv_db.set_value(req_id, "Hello world!")
         self.assertTrue(requirements.solve_element(task, req,
