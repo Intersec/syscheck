@@ -278,22 +278,6 @@ class TestTask(unittest.TestCase):
         finally:
             tmp_dir.cleanup()
 
-    def test_auto_res_with_auto_check_already_true(self):
-        """Test automatic resolution when automatic check returns true
-
-        When the automatic check succeed, the automatic resolution should not
-        apply.
-
-        """
-
-        task = self._get_task("task-001")
-        db = task.get_env_key_value_db()
-        db.set_value("key001", "value001")
-
-        task.apply_automatic_resolution("TEST_TASK_001__AUTO_RES_DB", "auto")
-
-        self.assertFalse(db.is_set("key002"))
-
     def test_auto_res_with_wrong_method(self):
         task = self._get_task("task-001")
 

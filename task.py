@@ -153,10 +153,6 @@ class Task():
             raise AssertionError(
                 f"Requirement '{req_id}' dependencies are not ready")
 
-        if self.check_requirement_status(req):
-            # Requirement's already fulfilled, nothing to do
-            return
-
         if res_id not in req["resolution"].keys():
             raise InvalidConfiguration(
                 f"Requirement resolution '{req_id}.{res_id}' do not exists")
