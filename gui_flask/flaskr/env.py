@@ -8,6 +8,7 @@ from flask import (Blueprint,
                    Markup,
                    request,
                    redirect)
+import db_tools
 from task import Task, InvalidConfiguration
 from workspace import get_workspace
 
@@ -31,6 +32,39 @@ def run_auto_res(task, req_id):
         flash("Configuration error", "error")
 
     return success
+
+def set_value(task, req_id):
+    success = True
+    res_id = request.args.get("res_id")
+    value = request.args.get("assisted_user_input_value")
+    req = task.get_requirement(req_id)
+    res = req["resolution"][res_id]
+    db = res.get("db")
+    key = res.get("key")
+
+    if not res_id:
+        success = False
+        flash("Resolution ID is mandatory", "error")
+
+    if not value:
+        success = False
+        flash("Value is mandatory", "error")
+
+    if not db:
+        success = False
+        flash("Database not set in resolution's configuration", "error")
+
+    if not key:
+        success = False
+        flash("Key not set in resolution's configuration", "error")
+
+    if not success:
+        return False
+
+    db_tools.set_value(task, req, [db, key, value])
+    flash("Value successfully set", "notice")
+
+    return True
 
 def render_dep_list(task, dep_list):
     method = dep_list[0]
@@ -145,6 +179,10 @@ def page_auto_res(req_id=None):
     if request.method == "GET":
         if request.args.get("run_auto_res"):
             if run_auto_res(task, req_id):
+                return redirect(url_for("env.page_auto_res", req_id=req_id))
+
+        if request.args.get("set_value"):
+            if set_value(task, req_id):
                 return redirect(url_for("env.page_auto_res", req_id=req_id))
 
     try:

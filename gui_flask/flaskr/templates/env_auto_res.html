@@ -12,12 +12,28 @@
 </form>
 {%- endmacro %}
 
+{% macro render_user_input_resolution(id, resolution) -%}
+<form>
+    <input type="hidden" name="res_id" value="{{id}}">
+    <ul>
+        <li>
+            {{ render_input_text(id, "value", "Value") }}
+        </li>
+        <li>
+            <input type="submit" name="set_value" value="Set value"/>
+        </li>
+    </ul>
+</form>
+{%- endmacro %}
+
 {% macro render_resolution(id, resolution) -%}
 {% call render_collapsible_element(id, resolution["label"]) %}
 {% if resolution["method"] == "ui.manual" %}
 {{ render_manual_resolution(id, resolution) }}
 {% elif resolution["method"] == "automatic" %}
 {{ render_auto_resolution(id, resolution) }}
+{% elif resolution["method"] == "ui.user_input" %}
+{{ render_user_input_resolution(id, resolution) }}
 {% else %}
 <div>
     Not displaying resolution '{{resolution["label"]}}' with unknown resolution method '{{resolution["method"]}}'
