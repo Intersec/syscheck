@@ -59,6 +59,19 @@ def is_branch_checked_out(task, requirement, args):
 
     return out[0].rstrip() == branch_name
 
+def is_tag_checked_out(task, requirement, args):
+    if len(args) < 2:
+        raise ValueError("Not enough arguments")
+
+    repo_dir = args[0]
+    tag_name = args[1]
+
+    out = run_git_command(repo_dir, "describe --tags", True)
+    assert len(out) == 1, \
+        f"Expected single line when checking current branch, got '{out}'"
+
+    return out[0].rstrip() == tag_name
+
 def checkout_branch(task, requirement, args):
     if len(args) < 2:
         raise ValueError("Not enough arguments")
