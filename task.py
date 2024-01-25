@@ -7,6 +7,9 @@ import requirements
 class DupplicateRequirement(Exception):
     pass
 
+class InvalidConfiguration(Exception):
+    pass
+
 class NotBool(Exception):
     pass
 
@@ -75,15 +78,45 @@ class Task():
     def get_workspace_collection_db(self):
         return self.workspace.collection_db
 
+    def check_requirement_status(self, req_name):
+        def check_requirement_dependencies(req):
+            if "dependencies" in req.keys():
+                dependencies = req["dependencies"]
+                if not type(dependencies) == list:
+                    msg = f"Dependencies for '{req['id']}' is not an array"
+                    raise InvalidConfiguration(msg)
+
+                for dep in dependencies:
+                    if not self.check_requirement_status(dep):
+                        return False
+            return True
+
+        def check_requirement_auto_res(req):
+            auto_check = req["automatic_check"]
+            res = requirements.solve_element(self, req, auto_check)
+
+            # Make sure the returned value is a boolean. If it is not, it
+            # might be that the configured check function is actually a
+            # procedure and the requirement configuration is wrong so better
+            # warn the user.
+            if type(res) != bool:
+                raise NotBool(req["automatic_check"][0])
+
+            return res
+
+        if req_name not in self.requirements.keys():
+            raise InvalidConfiguration(f"Requirement not found '{req_name}'")
+
+        req = self.requirements[req_name]
+
+        if not check_requirement_dependencies(req):
+            return False
+
+        if not check_requirement_auto_res(req):
+            return False
+
+        return True
+
     def is_task_ready(self):
-        req = self.requirements[self.target_requirement]
+        return self.check_requirement_status(self.target_requirement)
 
-        res = requirements.solve_element(self, req, req["automatic_check"])
-
-        # Make sure the returned value is a boolean. If it is not, it might be
-        # that the configured check function is actually a procedure and the
-        # requirement configuration is wrong so better warn the user.
-        if type(res) != bool:
-            raise NotBool(req["automatic_check"][0])
-
-        return res

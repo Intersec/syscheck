@@ -2,6 +2,9 @@ import importlib
 
 FUNCTIONS = {}
 
+class InvalidElement(Exception):
+    pass
+
 def _import_function_if_necessary(function_id):
     def split_element_function(element):
         components = element.split(".")
@@ -13,6 +16,11 @@ def _import_function_if_necessary(function_id):
         return
 
     mod_name, fun_name = split_element_function(function_id)
+
+    if not mod_name or not fun_name:
+        raise InvalidElement(
+            f"Cannot extract module and function from '{function_id}'")
+
     mod = importlib.import_module(mod_name)
     fun = getattr(mod, fun_name)
 

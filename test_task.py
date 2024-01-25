@@ -1,7 +1,8 @@
 import os
 import unittest
 
-from task import Task, NotBool
+from task import Task, NotBool, InvalidConfiguration
+from requirements import InvalidElement
 import test_common
 
 class TestTask(unittest.TestCase):
@@ -93,3 +94,78 @@ class TestTask(unittest.TestCase):
         task = Task(self.workspace, self.environment)
         with self.assertRaises(NotBool):
             task.is_task_ready()
+
+    def test_dependency_is_true_but_auto_check_is_false(self):
+        self.environment.key_value_db.set_value(
+            "task_conf_path",
+            self.task_cfg_path['task-001'])
+
+        task = Task(self.workspace, self.environment)
+        self.assertFalse(
+            task.check_requirement_status("TEST_TASK_001__REQ_DEP_TRUE"))
+
+    def test_auto_check_is_not_a_function(self):
+        self.environment.key_value_db.set_value(
+            "task_conf_path",
+            self.task_cfg_path['task-001'])
+
+        task = Task(self.workspace, self.environment)
+
+        fun = "TEST_TASK_001__REQ_FALSE"
+        expected_msg_re = f"^Cannot extract module and function from '{fun}'$"
+        with self.assertRaisesRegex(InvalidElement, expected_msg_re):
+            task.check_requirement_status(
+                "TEST_TASK_001__REQ_INVAL_AUTO_CHECK_001")
+
+    def test_dependency_is_not_a_list(self):
+        self.environment.key_value_db.set_value(
+            "task_conf_path",
+            self.task_cfg_path['task-001'])
+        req_name = "TEST_TASK_001__REQ_INVAL_DEP_001"
+
+        task = Task(self.workspace, self.environment)
+
+        expected_msg_re = f"^Dependencies for '{req_name}' is not an array$"
+        with self.assertRaisesRegex(InvalidConfiguration, expected_msg_re):
+            task.check_requirement_status(req_name)
+
+    def test_dependency_do_not_exists(self):
+        self.environment.key_value_db.set_value(
+            "task_conf_path",
+            self.task_cfg_path['task-001'])
+
+        task = Task(self.workspace, self.environment)
+
+        expected_msg_re = f"^Requirement not found 'REQ_DO_NOT_EXISIS'$"
+        with self.assertRaisesRegex(InvalidConfiguration, expected_msg_re):
+            task.check_requirement_status("TEST_TASK_001__REQ_INVAL_DEP_002")
+
+    def test_requirement_do_not_exists(self):
+        self.environment.key_value_db.set_value(
+            "task_conf_path",
+            self.task_cfg_path['task-001'])
+
+        task = Task(self.workspace, self.environment)
+
+        expected_msg_re = f"^Requirement not found 'REQ_DO_NOT_EXISIS'$"
+        with self.assertRaisesRegex(InvalidConfiguration, expected_msg_re):
+            task.check_requirement_status("REQ_DO_NOT_EXISIS")
+
+    def test_auto_check_is_true_but_dependency_is_false(self):
+        self.environment.key_value_db.set_value(
+            "task_conf_path",
+            self.task_cfg_path['task-001'])
+
+        task = Task(self.workspace, self.environment)
+        self.assertFalse(
+            task.check_requirement_status("TEST_TASK_001__REQ_DEP_FALSE"))
+
+    def test_both_dependencies_and_auto_check_are_true(self):
+        self.environment.key_value_db.set_value(
+            "task_conf_path",
+            self.task_cfg_path['task-001'])
+
+        task = Task(self.workspace, self.environment)
+        self.assertTrue(
+            task.check_requirement_status(
+                "TEST_TASK_001__REQ_DEP_AND_CHECK_TRUE"))

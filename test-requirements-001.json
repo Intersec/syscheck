@@ -38,4 +38,33 @@
     "id": "TEST_TASK_001__REQ_NO_RESULT",
     "label": "Automatic check returns 'None'",
     "automatic_check": [ "generic_tools.none" ]
+}, {
+    "id": "TEST_TASK_001__REQ_INVAL_AUTO_CHECK_001",
+    "label": "Automatic_check parameter is a requirement and not a function",
+    "automatic_check": [ "TEST_TASK_001__REQ_FALSE" ]
+}, {
+    "id": "TEST_TASK_001__REQ_INVAL_DEP_001",
+    "label": "Dependency not a list",
+    "dependencies": "TEST_TASK_001__REQ_TRUE",
+    "automatic_check": [ "generic_tools.false" ]
+}, {
+    "id": "TEST_TASK_001__REQ_INVAL_DEP_002",
+    "label": "Dependency not a list",
+    "dependencies": [ "REQ_DO_NOT_EXISIS" ],
+    "automatic_check": [ "generic_tools.false" ]
+}, {
+    "id": "TEST_TASK_001__REQ_DEP_TRUE",
+    "label": "Auto check is false but dependency is true",
+    "dependencies": [ "TEST_TASK_001__REQ_TRUE" ],
+    "automatic_check": [ "generic_tools.false" ]
+}, {
+    "id": "TEST_TASK_001__REQ_DEP_AND_CHECK_TRUE",
+    "label": "Auto check and dependency are both true",
+    "dependencies": [ "TEST_TASK_001__REQ_TRUE" ],
+    "automatic_check": [ "generic_tools.true" ]
+}, {
+    "id": "TEST_TASK_001__REQ_DEP_FALSE",
+    "label": "Auto check is true but dependency is false",
+    "dependencies": [ "TEST_TASK_001__REQ_FALSE" ],
+    "automatic_check": [ "generic_tools.true" ]
 }]
