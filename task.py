@@ -78,6 +78,14 @@ class Task():
     def get_workspace_collection_db(self):
         return self.workspace.collection_db
 
+    def get_requirement(self, req_name):
+        if req_name not in self.requirements.keys():
+            raise InvalidConfiguration(f"Requirement not found '{req_name}'")
+
+        req = self.requirements[req_name]
+
+        return req
+
     def check_requirement_status(self, req_name):
         def check_requirement_dependencies(req):
             if "dependencies" in req.keys():
@@ -104,10 +112,7 @@ class Task():
 
             return res
 
-        if req_name not in self.requirements.keys():
-            raise InvalidConfiguration(f"Requirement not found '{req_name}'")
-
-        req = self.requirements[req_name]
+        req = self.get_requirement(req_name)
 
         if not check_requirement_dependencies(req):
             return False

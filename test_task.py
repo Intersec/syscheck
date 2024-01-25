@@ -76,6 +76,15 @@ class TestTask(unittest.TestCase):
         self.assertEqual(task.get_target_requirement_name(),
                          "TEST_TASK_001__REQ_TRUE")
 
+    def test_get_requirement(self):
+        self.environment.key_value_db.set_value("task_conf_path",
+                                                self.task_cfg_path['task-001'])
+        task = Task(self.workspace, self.environment)
+        req = task.get_requirement("TEST_TASK_001__REQ_TRUE")
+        self.assertEqual(req["id"], "TEST_TASK_001__REQ_TRUE")
+        self.assertEqual(req["label"], "Automatic check returns true")
+        self.assertEqual(req["automatic_check"][0], "generic_tools.true")
+
     def test_is_ready_return_true(self):
         self.environment.key_value_db.set_value("task_conf_path",
                                                 self.task_cfg_path['task-001'])
