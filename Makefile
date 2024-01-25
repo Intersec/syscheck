@@ -10,6 +10,7 @@ TESTS := \
 	test_git_tools \
 	test_db_tools \
 	test_gui_tools \
+	test_system_tools \
 
 all: tests
 
