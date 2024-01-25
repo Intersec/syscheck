@@ -232,6 +232,31 @@ class TestTask(unittest.TestCase):
         # indeed not run.
         task.check_requirement_status("TEST_TASK_001__REQ_DEP_BUT_NO_RESULT")
 
+    def test_safe_auto_check_true(self):
+        task = self._get_task("task-001")
+        req_id = "TEST_TASK_001__REQ_SAFE_CHECK_SUCCESS_001"
+        self.assertTrue(task.check_requirement_status(req_id))
+
+    def test_safe_auto_check_false_but_auto_check_true(self):
+        task = self._get_task("task-001")
+        req_id = "TEST_TASK_001__REQ_SAFE_CHECK_SUCCESS_002"
+        self.assertTrue(task.check_requirement_status(req_id))
+
+    def test_safe_auto_check_false_and_no_auto_check(self):
+        task = self._get_task("task-001")
+        req_id = "TEST_TASK_001__REQ_SAFE_CHECK_NO_AUTO_CHECK_FAIL_001"
+        self.assertFalse(task.check_requirement_status(req_id))
+
+    def test_safe_auto_check_false_and_dependency_fails(self):
+        task = self._get_task("task-001")
+        req_id = "TEST_TASK_001__REQ_SAFE_CHECK_FAIL_002"
+        self.assertFalse(task.check_requirement_status(req_id))
+
+    def test_dependency_good_but_safe_auto_check_and_auto_check_false(self):
+        task = self._get_task("task-001")
+        req_id = "TEST_TASK_001__REQ_SAFE_CHECK_FAIL_003"
+        self.assertFalse(task.check_requirement_status(req_id))
+
     def test_auto_res(self):
         def initialize_repo(repo_dir):
             """Initialize a directory with a git repository

@@ -236,4 +236,33 @@
                      ]
         }
     }
+}, {
+    "id": "TEST_TASK_001__REQ_SAFE_CHECK_SUCCESS_001",
+    "label": "Safe automatic check returns True",
+    "dependencies": "TEST_TASK_001__REQ_FALSE",
+    "safe_automatic_check": [ "generic_tools.true" ],
+    "automatic_check": [ "generic_tools.false" ]
+}, {
+    "id": "TEST_TASK_001__REQ_SAFE_CHECK_SUCCESS_002",
+    "label": "automatic check with failed safe check succeed",
+    "dependencies": "TEST_TASK_001__REQ_TRUE",
+    "safe_automatic_check": [ "generic_tools.false" ],
+    "automatic_check": [ "generic_tools.true" ]
+}, {
+    "id": "TEST_TASK_001__REQ_SAFE_CHECK_NO_AUTO_CHECK_FAIL_001",
+    "label": "Safe automatic check returns False",
+    "dependencies": "TEST_TASK_001__REQ_TRUE",
+    "safe_automatic_check": [ "generic_tools.false" ]
+}, {
+    "id": "TEST_TASK_001__REQ_SAFE_CHECK_FAIL_002",
+    "label": "Safe automatic check failure because of dependency",
+    "dependencies": "TEST_TASK_001__REQ_FALSE",
+    "safe_automatic_check": [ "generic_tools.false" ],
+    "automatic_check": [ "generic_tools.true" ]
+}, {
+    "id": "TEST_TASK_001__REQ_SAFE_CHECK_FAIL_003",
+    "label": "automatic check dans safe check fails",
+    "dependencies": "TEST_TASK_001__REQ_TRUE",
+    "safe_automatic_check": [ "generic_tools.false" ],
+    "automatic_check": [ "generic_tools.false" ]
 }]

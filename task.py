@@ -181,7 +181,13 @@ class Task():
 
     def check_requirement_status(self, req_arg):
         def run_requirement_auto_check(req):
-            auto_check = req["automatic_check"]
+            return run_requirement_check(req, "automatic_check")
+
+        def run_requirement_safe_auto_check(req):
+            return run_requirement_check(req, "safe_automatic_check")
+
+        def run_requirement_check(req, item):
+            auto_check = req[item]
             res = requirements.solve_element(self, req, auto_check)
 
             # Make sure the returned value is a boolean. If it is not, it
@@ -189,7 +195,7 @@ class Task():
             # procedure and the requirement configuration is wrong so better
             # warn the user.
             if type(res) != bool:
-                raise NotBool(req["automatic_check"][0])
+                raise NotBool(req[item][0])
 
             return res
 
@@ -198,13 +204,16 @@ class Task():
         else:
             req = req_arg
 
-        if not self.check_requirement_dependencies(req):
-            return False
+        if "safe_automatic_check" in req:
+            if run_requirement_safe_auto_check(req):
+                return True
 
-        if not run_requirement_auto_check(req):
-            return False
+        if "automatic_check" in req:
+            if self.check_requirement_dependencies(req):
+                if run_requirement_auto_check(req):
+                    return True
 
-        return True
+        return False
 
     def is_task_ready(self):
         return self.check_requirement_status(self.target_requirement_name)
