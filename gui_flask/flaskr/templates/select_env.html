@@ -12,7 +12,7 @@
 <form>
     <ul>
         <li>
-            <label>Environment name</label><select name="select_env_env_name">
+            <label>Environment name</label><select name="env_name">
                 {% for env_name in env_list %}
                 <option value="{{env_name}}">{{env_name}}</option>
                 {% endfor %}
@@ -29,13 +29,15 @@
 <form>
     <ul>
         <li>
-            {{ render_input_text("known_task", "env_name", "Environment name") }}
+            {{ render_input_text("known_task", "known_task", "env_name", "Environment name") }}
         </li>
         <li>
-            <label>Task configuration file</label><select name="known_task_task_cfg_path">
+            <label>Task configuration file</label><select name="task_cfg_path">
                 {% for task in tasks_list %}
                 <option
-                    {% if request.args.get("known_task_task_cfg_path") == task %}selected{% endif %}
+                    {% if request.args.get("known_task") and request.args.get("task_cfg_path") == task %}
+                    selected
+                    {% endif %}
                     value="{{task}}">
                     {{task}}
                 </option>
@@ -53,10 +55,10 @@
 <form>
     <ul>
         <li>
-            {{ render_input_text("create_env", "env_name", "Environment name") }}
+            {{ render_input_text("create_env", "create_env", "env_name", "Environment name") }}
         </li>
         <li>
-            {{ render_input_text("create_env", "task_cfg_path", "Task configuration file") }}
+            {{ render_input_text("create_env", "create_env", "task_cfg_path", "Task configuration file") }}
         </li>
         <li>
             <input type="submit" name="create_env" value="Create environment" />

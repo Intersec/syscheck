@@ -13,14 +13,14 @@
 and in some pages we have multiple inputs from different forms that can have
 the same name #}
 
-{% macro render_input_text(form_id, name, label) -%}
+{% macro render_input_text(form_id, submit_button_name, name, label) -%}
 {% with input_id = form_id + "_" + name %}
 <label for="{{input_id}}">{{label}}</label>
 <input id="{{input_id}}"
-       {% if request.args.get(input_id) %}
-       value="{{ request.args.get(input_id) }}"
+       {% if request.args.get(submit_button_name) %}
+       value="{{ request.args.get(name) }}"
        {% endif %}
-       name="{{input_id}}" />
+       name="{{name}}" />
 {% endwith %}
 {%- endmacro %}
 

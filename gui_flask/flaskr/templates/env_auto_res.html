@@ -20,12 +20,7 @@
     <input type="hidden" name="res_id" value="{{id}}">
     <ul>
       <li>
-        <label for="{{id}}_value">Value</label>
-        <input id="{{id}}_value"
-               {% if request.args.get(id + "_value") %}
-                 value="{{ request.args.get(id + "_value") }}"
-               {% endif %}
-               name="user_value" />
+        {{ render_input_text(id, "set_value", "user_value", "Value") }}
       </li>
       <li>
         <input type="submit" name="set_value" value="Set value"/>

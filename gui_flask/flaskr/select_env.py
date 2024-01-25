@@ -17,7 +17,7 @@ blueprint = Blueprint('select_env', __name__, url_prefix='/select-env')
 
 def select_env():
     success = False
-    env_name = request.args.get("select_env_env_name")
+    env_name = request.args.get("env_name")
 
     if not env_name:
         flash("Environment name is mandatory", "error")
@@ -56,8 +56,8 @@ def common_create_env(env_name, task_path):
 
 def create_env_using_known_task():
     success = False
-    env_name = request.args.get("known_task_env_name")
-    task_path = request.args.get("known_task_task_cfg_path")
+    env_name = request.args.get("env_name")
+    task_path = request.args.get("task_cfg_path")
 
     if not env_name:
         flash("Environment name is mandatory", "error")
@@ -73,8 +73,8 @@ def create_env_using_known_task():
 
 def create_env():
     success = False
-    env_name = request.args.get("create_env_env_name")
-    task_path = request.args.get("create_env_task_cfg_path")
+    env_name = request.args.get("env_name")
+    task_path = request.args.get("task_cfg_path")
 
     if not env_name:
         flash("Environment name is mandatory", "error")
