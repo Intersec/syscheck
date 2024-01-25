@@ -6,11 +6,31 @@ from flask import (Blueprint,
                    flash,
                    url_for,
                    Markup,
+                   request,
                    redirect)
 from task import Task, InvalidConfiguration
 from workspace import get_workspace
 
 blueprint = Blueprint('env', __name__, url_prefix='/env')
+
+def run_auto_res(task, req_id):
+    success = False
+    res_id = request.args.get("res_id")
+
+    if not res_id:
+        flash("Resolution ID is mandatory", "error")
+        return success
+
+    try:
+        task.apply_automatic_resolution(req_id, res_id)
+        flash("Resolution successfully applied", "notice")
+        success = True
+    except AssertionError as err:
+        flash("Dependencies are not ready", "error")
+    except InvalidConfiguration as err:
+        flash("Configuration error", "error")
+
+    return success
 
 def render_dep_list(task, dep_list):
     method = dep_list[0]
@@ -121,6 +141,11 @@ def page_auto_res(req_id=None):
     workspace = get_workspace()
     env = workspace.get_environment(session["env_name"])
     task = Task(workspace, env)
+
+    if request.method == "GET":
+        if request.args.get("run_auto_res"):
+            if run_auto_res(task, req_id):
+                return redirect(url_for("env.page_auto_res", req_id=req_id))
 
     try:
         req = task.get_requirement(req_id)

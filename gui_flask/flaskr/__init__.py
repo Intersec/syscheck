@@ -38,13 +38,15 @@ def create_app(test_config=None):
 
     from . import env
     app.register_blueprint(env.blueprint)
-    app.jinja_env.filters['format_description'] = gui_tools.format_description
 
     from . import select_env
     app.register_blueprint(select_env.blueprint)
 
     from . import db_tools
     app.register_blueprint(db_tools.blueprint)
+
+    app.jinja_env.filters['format_description'] = gui_tools.format_description
+    app.jinja_env.filters['jsonify'] = gui_tools.jsonify
 
     # # a simple page that says hello
     # @app.route('/hello')

@@ -1,3 +1,5 @@
+import json
+
 def format_description(text, task):
     def substitute_hint_with_db_value(text, d1, d2, d3):
         db_args = text[d2+1:d3].split(".", 1)
@@ -56,3 +58,6 @@ def format_description(text, task):
         i = i + 1
 
     return text
+
+def jsonify(text):
+    return json.dumps(text, indent=4)
