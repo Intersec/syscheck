@@ -27,8 +27,10 @@ def run_auto_res(task, req_id):
         flash("Resolution successfully applied", "notice")
         success = True
     except AssertionError as err:
+        # TODO check message to make sure it's a dependency error
         flash("Dependencies are not ready", "error")
     except InvalidConfiguration as err:
+        # TODO add exception's message to the flash
         flash("Configuration error", "error")
 
     return success
