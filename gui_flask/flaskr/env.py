@@ -210,6 +210,10 @@ def page_auto_res(req_id=None):
             if set_value_from_user(task, req_id):
                 return redirect(url_for("env.page_auto_res", req_id=req_id))
 
+        if request.args.get("user_select_submit"):
+            if set_value_from_user(task, req_id):
+                return redirect(url_for("env.page_auto_res", req_id=req_id))
+
     try:
         req = task.get_requirement(req_id)
         return render_template('env_auto_res.html', task=task, req=req)

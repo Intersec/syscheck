@@ -31,6 +31,39 @@
   </form>
 {%- endmacro %}
 
+{% macro render_db_options(db, collection, default_option) -%}
+  {% for option in db.get_values(collection) %}
+    <option
+      {% if option == default_option %}selected{% endif %}
+      value="{{option}}">
+      {{option}}
+    </option>
+  {% endfor %}
+{%- endmacro %}
+
+{% macro render_user_select_resolution(id, resolution) -%}
+  <form>
+    <input type="hidden" name="res_id" value="{{id}}">
+    <ul>
+      <li>
+        <label>Value</label><select name="user_value">
+          {% if request.args.get("user_select_submit") %}
+            {% set prev_choice = request.args.get("user_value") %}
+          {% endif %}
+            {% if resolution["src_db"] == "common" %}
+              {{ render_db_options(task.get_workspace_collection_db(), resolution["src_collection"], prev_choice) }}
+            {% else %}
+              {{ render_db_options(task.get_env_collection_db(), resolution["src_collection"], request.args.get("user_value")) }}
+            {% endif %}
+        </select>
+      </li>
+      <li>
+        <input type="submit" name="user_select_submit" value="Use value"/>
+      </li>
+    </ul>
+  </form>
+{%- endmacro %}
+
 {% macro render_resolution(id, resolution) -%}
   {% call render_collapsible_element(id, resolution["label"]) %}
     {% if resolution["method"] == "ui.manual" %}
@@ -39,6 +72,8 @@
       {{ render_auto_resolution(id, resolution) }}
     {% elif resolution["method"] == "ui.user_input" %}
       {{ render_user_input_resolution(id, resolution) }}
+    {% elif resolution["method"] == "ui.user_select" %}
+      {{ render_user_select_resolution(id, resolution) }}
     {% else %}
       <div>
         Not displaying resolution '{{resolution["label"]}}' with unknown resolution method '{{resolution["method"]}}'
