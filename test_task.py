@@ -69,11 +69,11 @@ class TestTask(unittest.TestCase):
         # If the task was created then the requirment file was found.
         self.assertTrue(True)
 
-    def test_get_target_requirement(self):
+    def test_get_target_requirement_name(self):
         self.environment.key_value_db.set_value("task_conf_path",
                                                 self.task_cfg_path['task-001'])
         task = Task(self.workspace, self.environment)
-        self.assertEqual(task.get_target_requirement(),
+        self.assertEqual(task.get_target_requirement_name(),
                          "TEST_TASK_001__REQ_TRUE")
 
     def test_is_ready_return_true(self):

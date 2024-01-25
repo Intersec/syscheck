@@ -42,7 +42,7 @@ class Task():
             raise FileNotFoundError(f"Task file '{task_file}' not found")
 
         self.id = task_json["id"]
-        self.target_requirement = task_json["requirement"]
+        self.target_requirement_name = task_json["requirement"]
 
         requirements_file = task_json["requirements_file"]
         if not os.path.isabs(requirements_file):
@@ -63,8 +63,8 @@ class Task():
                 raise DupplicateRequirement(requirement["id"])
             self.requirements[requirement["id"]] = requirement
 
-    def get_target_requirement(self):
-        return self.target_requirement
+    def get_target_requirement_name(self):
+        return self.target_requirement_name
 
     def get_env_key_value_db(self):
         return self.environment.key_value_db
@@ -118,5 +118,5 @@ class Task():
         return True
 
     def is_task_ready(self):
-        return self.check_requirement_status(self.target_requirement)
+        return self.check_requirement_status(self.target_requirement_name)
 
