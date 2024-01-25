@@ -61,8 +61,10 @@ class TestTask(unittest.TestCase):
             Task(self.workspace, self.environment)
 
     def test_requirements_in_another_directory(self):
-        """This test check that, if the task file links to a requirements file in a
-        parent directory, the program will check in the task file's parent
+        """Test loading requirements in another directory
+
+        This test check that, if the task file links to a requirements file in
+        a parent directory, the program will check in the task file's parent
         directory and not in the working direcory's parent directory.
 
         """
