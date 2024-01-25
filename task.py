@@ -109,6 +109,30 @@ class Task():
                     return False
         return True
 
+    def apply_automatic_resolution(self, req_arg):
+        """Apply the requirement's automatic resolution.
+
+        The req_arg parameter can be the requirement's name or the requirement
+        itself.
+
+        """
+
+        if type(req_arg) is str:
+            req = self.get_requirement(req_arg)
+        else:
+            req = req_arg
+
+        if not self.check_requirement_dependencies(req):
+            raise AssertionError(
+                f"Requirement '{req['id']}' dependencies are not ready")
+
+        if self.check_requirement_status(req["id"]):
+            # Requirement's already fulfilled, nothing to do
+            return
+
+        auto_res = req["automatic_resolution"]
+        res = requirements.solve_element(self, req, auto_res)
+
     def check_requirement_status(self, req_name):
         def run_requirement_auto_check(req):
             auto_check = req["automatic_check"]
