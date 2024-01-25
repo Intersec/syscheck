@@ -112,7 +112,11 @@
          {% endif %}
     </div>
   {% endwith %}
-  {% for res_id, res in req["resolution"].items() %}
-    {{ render_resolution(res_id, res) }}
-  {% endfor %}
+  {% if req["resolution"] %}
+    {% for res_id, res in req["resolution"].items() %}
+      {{ render_resolution(res_id, res) }}
+    {% endfor %}
+  {% else %}
+    <div class="tile">No resolutions for this requirement</div>
+  {% endif %}
 {% endblock %}
