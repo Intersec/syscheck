@@ -29,3 +29,11 @@ class CommonDatabase():
         db_json = json.loads(db_file_content)
 
         return db_json
+
+    # TODO add tests for this function
+    def items(self):
+        content = self.load()
+
+        result = content.items()
+
+        return result
