@@ -78,11 +78,11 @@ class Task():
     def get_workspace_collection_db(self):
         return self.workspace.collection_db
 
-    def get_requirement(self, req_name):
-        if req_name not in self.requirements.keys():
-            raise InvalidConfiguration(f"Requirement not found '{req_name}'")
+    def get_requirement(self, req_id):
+        if req_id not in self.requirements.keys():
+            raise InvalidConfiguration(f"Requirement not found '{req_id}'")
 
-        req = self.requirements[req_name]
+        req = self.requirements[req_id]
 
         return req
 
@@ -133,7 +133,7 @@ class Task():
         auto_res = req["automatic_resolution"]
         res = requirements.solve_element(self, req, auto_res)
 
-    def check_requirement_status(self, req_name):
+    def check_requirement_status(self, req_id):
         def run_requirement_auto_check(req):
             auto_check = req["automatic_check"]
             res = requirements.solve_element(self, req, auto_check)
@@ -147,7 +147,7 @@ class Task():
 
             return res
 
-        req = self.get_requirement(req_name)
+        req = self.get_requirement(req_id)
 
         if not self.check_requirement_dependencies(req):
             return False

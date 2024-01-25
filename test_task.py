@@ -120,11 +120,11 @@ class TestTask(unittest.TestCase):
 
     def test_dependency_is_not_a_list(self):
         task = self._get_task("task-001")
-        req_name = "TEST_TASK_001__REQ_INVAL_DEP_001"
+        req_id = "TEST_TASK_001__REQ_INVAL_DEP_001"
 
-        expected_msg_re = f"^Dependencies for '{req_name}' is not an array$"
+        expected_msg_re = f"^Dependencies for '{req_id}' is not an array$"
         with self.assertRaisesRegex(InvalidConfiguration, expected_msg_re):
-            task.check_requirement_status(req_name)
+            task.check_requirement_status(req_id)
 
     def test_dependency_do_not_exists(self):
         task = self._get_task("task-001")
@@ -166,18 +166,18 @@ class TestTask(unittest.TestCase):
 
     def test_dependecies_checked_using_requirement_name(self):
         task = self._get_task("task-001")
-        req_name = "TEST_TASK_001__REQ_DEP_TRUE"
-        self.assertTrue(task.check_requirement_dependencies(req_name))
+        req_id = "TEST_TASK_001__REQ_DEP_TRUE"
+        self.assertTrue(task.check_requirement_dependencies(req_id))
 
     def test_dependecies_not_checked_using_requirement_name(self):
         task = self._get_task("task-001")
-        req_name = "TEST_TASK_001__REQ_DEP_FALSE"
-        self.assertFalse(task.check_requirement_dependencies(req_name))
+        req_id = "TEST_TASK_001__REQ_DEP_FALSE"
+        self.assertFalse(task.check_requirement_dependencies(req_id))
 
     def test_dependecies_not_checked_using_requirement_name(self):
         task = self._get_task("task-001")
-        req_name = "TEST_TASK_001__REQ_DEP_FALSE"
-        self.assertFalse(task.check_requirement_dependencies(req_name))
+        req_id = "TEST_TASK_001__REQ_DEP_FALSE"
+        self.assertFalse(task.check_requirement_dependencies(req_id))
 
     def test_auto_res_with_dependencies_not_met(self):
         task = self._get_task("task-001")
