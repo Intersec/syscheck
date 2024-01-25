@@ -5,10 +5,10 @@ from flask import (Blueprint,
                    session,
                    flash,
                    url_for,
-                   Markup,
                    request,
                    redirect)
 import db_tools
+from markupsafe import Markup
 from task import Task, InvalidConfiguration
 from workspace import get_workspace
 
