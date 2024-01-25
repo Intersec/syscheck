@@ -120,6 +120,14 @@ form input[type="submit"]:disabled, form input[type="submit"]:disabled:hover {
     cursor: not-allowed;
 }
 
+form input[type="submit"].danger {
+    background-color: #E75573;
+}
+
+form input[type="submit"]:disabled.danger, form input[type="submit"]:disabled:hover.danger {
+    background-color: #FA5C7C;
+}
+
 form select {
     border: 0px;
     border-radius: 3px;

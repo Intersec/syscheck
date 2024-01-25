@@ -1,0 +1,30 @@
+
+.dump_db li span {
+    display: inline-block;
+    background-color: #E0E0E0;
+    border: 1px solid grey;
+    margin-left: 10px;
+    min-width: 300px;
+    padding: 5px;
+    text-align: center;
+}
+
+.dump_db input[type="submit"] {
+    margin-left: 0px;
+    width: 100px;
+}
+
+li.collection_value {
+    padding-left: 200px;
+}
+
+.dump_db ul {
+    margin: 0;
+    padding: 0;
+}
+
+.dump_db li {
+    list-style-type: none;
+    margin: 5px 0;
+    /* font-size: 0; */
+}

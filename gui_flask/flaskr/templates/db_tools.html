@@ -1,14 +1,185 @@
 {% extends 'base.html' %}
 
+{% block links %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='db_tools.css') }}">
+{% endblock %}
+
 {% block header %}
   <h1>{% block title %}Database tools{% endblock %}</h1>
 {% endblock %}
 
 {% block content %}
-  <ul>
-    <li>Set value</li>
-    <li>Get value</li>
-    <li>...</li>
-    <li>Format manual procedure</li>
-  </ul>
+
+  {% if env_kv_db %}
+
+    {% call render_collapsible_element("env_kv_db", "env_kv_db", "Environment Key/Value database") %}
+      <form>
+        <input type="hidden" name="env_kv_db" value="set" />
+        <ul>
+          <li>
+            {{ render_input_text("add_env_kv_db", "add_env_kv_db_elt", "key", "Key") }}
+          </li>
+          <li>
+            {{ render_input_text("add_env_kv_db", "add_env_kv_db_elt", "value", "Value") }}
+          </li>
+          <li>
+            <input type="submit" name="add_env_kv_db_elt" value="Set key" />
+          </li>
+        </ul>
+      </form>
+
+      <ul class="dump_db">
+        {% for key, value in env_kv_db.items() if value %}
+          <li>
+            <form>
+              <input type="hidden" name="env_kv_db" value="set" />
+              <input type="hidden" name="key" value="{{key}}" />
+              <input type="submit" name="delete_env_kv_db_elt" value="Remove" class="danger" />
+              <span> {{ key }} </span>
+              <span> {{ value }} </span>
+            </form>
+          </li>
+        {% else %}
+          <li>
+            <label> Database is empty </label>
+          </li>
+        {% endfor %}
+      </ul>
+    {% endcall %}
+
+    {% call render_collapsible_element("env_coll_db", "env_coll_db", "Environment Collection database") %}
+      <form>
+        <input type="hidden" name="env_coll_db" value="set" />
+        <ul>
+          <li>
+            {{ render_input_text("add_env_coll_db", "add_env_coll_db_elt", "collection", "Collection") }}
+          </li>
+          <li>
+            {{ render_input_text("add_env_coll_db", "add_env_coll_db_elt", "value", "Value") }}
+          </li>
+          <li>
+            <input type="submit" name="add_env_coll_db_elt" value="Add value" />
+          </li>
+        </ul>
+      </form>
+
+      <ul class="dump_db">
+        {% for key, values in env_collection_db.items() if values %}
+          <li class="collection_key">
+            <form>
+              <input type="hidden" name="env_coll_db" value="set" />
+              <input type="hidden" name="collection" value="{{key}}" />
+              <input type="submit" name="delete_env_coll_db_coll" value="Remove" class="danger" />
+              <span> {{ key }} </span>
+            </form>
+          </li>
+          {% for value in values %}
+            <li class="collection_value">
+              <form>
+                <input type="hidden" name="env_coll_db" value="set" />
+                <input type="hidden" name="collection" value="{{key}}" />
+                <input type="hidden" name="value" value="{{value}}" />
+                <input type="submit" name="delete_env_coll_db_elt" value="Remove" class="danger" />
+                <span> {{ value }} </span>
+              </form>
+            </li>
+          {% else %}
+            <li>
+              <label> Collection is empty </label>
+            </li>
+          {% endfor %}
+        {% else %}
+          <li>
+            <label> Database is empty </label>
+          </li>
+        {% endfor %}
+      </ul>
+    {% endcall %}
+
+  {% endif %}
+
+  {% call render_collapsible_element("common_kv_db", "common_kv_db", "Workspace Key/Value database") %}
+    <form>
+      <input type="hidden" name="common_kv_db" value="set" />
+      <ul>
+        <li>
+          {{ render_input_text("add_common_kv_db", "add_common_kv_db_elt", "key", "Key") }}
+        </li>
+        <li>
+          {{ render_input_text("add_common_kv_db", "add_common_kv_db_elt", "value", "Value") }}
+        </li>
+        <li>
+          <input type="submit" name="add_common_kv_db_elt" value="Set key" />
+        </li>
+      </ul>
+    </form>
+
+    <ul class="dump_db">
+      {% for key, value in common_kv_db.items() if value %}
+        <li>
+          <form>
+            <input type="hidden" name="common_kv_db" value="set" />
+            <input type="hidden" name="key" value="{{key}}" />
+            <input type="submit" name="delete_common_kv_db_elt" value="Remove" class="danger" />
+            <span> {{ key }} </span>
+            <span> {{ value }} </span>
+          </form>
+        </li>
+      {% else %}
+        <li>
+          <label> Database is empty </label>
+        </li>
+      {% endfor %}
+    </ul>
+  {% endcall %}
+
+  {% call render_collapsible_element("common_coll_db", "common_coll_db", "Workspace Collection database") %}
+    <form>
+      <input type="hidden" name="common_coll_db" value="set" />
+      <ul>
+        <li>
+          {{ render_input_text("add_common_coll_db", "add_common_coll_db_elt", "collection", "Collection") }}
+        </li>
+        <li>
+          {{ render_input_text("add_common_coll_db", "add_common_coll_db_elt", "value", "Value") }}
+        </li>
+        <li>
+          <input type="submit" name="add_common_coll_db_elt" value="Add value" />
+        </li>
+      </ul>
+    </form>
+
+    <ul class="dump_db">
+      {% for key, values in common_collection_db.items() if values %}
+        <li class="collection_key">
+          <form>
+            <input type="hidden" name="common_coll_db" value="set" />
+            <input type="hidden" name="collection" value="{{key}}" />
+            <input type="submit" name="delete_common_coll_db_coll" value="Remove" class="danger" />
+            <span> {{ key }} </span>
+          </form>
+        </li>
+        {% for value in values %}
+          <li class="collection_value">
+            <form>
+              <input type="hidden" name="common_coll_db" value="set" />
+              <input type="hidden" name="collection" value="{{key}}" />
+              <input type="hidden" name="value" value="{{value}}" />
+              <input type="submit" name="delete_common_coll_db_elt" value="Remove" class="danger" />
+              <span> {{ value }} </span>
+            </form>
+          </li>
+        {% else %}
+          <li>
+            <label> Collection is empty </label>
+          </li>
+        {% endfor %}
+      {% else %}
+        <li>
+          <label> Database is empty </label>
+        </li>
+      {% endfor %}
+    </ul>
+  {% endcall %}
+
 {% endblock %}
