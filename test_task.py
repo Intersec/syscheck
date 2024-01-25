@@ -109,6 +109,16 @@ class TestTask(unittest.TestCase):
         self.assertFalse(
             task.check_requirement_status("TEST_TASK_001__REQ_DEP_TRUE"))
 
+    def test_auto_check_is_false_using_req_obj(self):
+        task = self._get_task("task-001")
+        req = task.requirements["TEST_TASK_001__REQ_FALSE"]
+        self.assertFalse(task.check_requirement_status(req))
+
+    def test_auto_check_is_true_using_req_obj(self):
+        task = self._get_task("task-001")
+        req = task.requirements["TEST_TASK_001__REQ_TRUE"]
+        self.assertTrue(task.check_requirement_status(req))
+
     def test_auto_check_is_not_a_function(self):
         task = self._get_task("task-001")
 

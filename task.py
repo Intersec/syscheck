@@ -104,8 +104,8 @@ class Task():
                 msg = f"Dependencies for '{req['id']}' is not an array"
                 raise InvalidConfiguration(msg)
 
-            for dep in dependencies:
-                if not self.check_requirement_status(dep):
+            for req_id in dependencies:
+                if not self.check_requirement_status(req_id):
                     return False
         return True
 
@@ -126,14 +126,14 @@ class Task():
             raise AssertionError(
                 f"Requirement '{req['id']}' dependencies are not ready")
 
-        if self.check_requirement_status(req["id"]):
+        if self.check_requirement_status(req):
             # Requirement's already fulfilled, nothing to do
             return
 
         auto_res = req["automatic_resolution"]
         res = requirements.solve_element(self, req, auto_res)
 
-    def check_requirement_status(self, req_id):
+    def check_requirement_status(self, req_arg):
         def run_requirement_auto_check(req):
             auto_check = req["automatic_check"]
             res = requirements.solve_element(self, req, auto_check)
@@ -147,7 +147,10 @@ class Task():
 
             return res
 
-        req = self.get_requirement(req_id)
+        if type(req_arg) is str:
+            req = self.get_requirement(req_arg)
+        else:
+            req = req_arg
 
         if not self.check_requirement_dependencies(req):
             return False
