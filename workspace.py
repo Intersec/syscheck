@@ -14,6 +14,18 @@ class EnvironmentNotFound(Exception):
 class InvalidEnvironmentName(Exception):
     pass
 
+def get_workspace():
+    default_path = os.environ.get("HOME") + "/.local/share/syscheck"
+    env_path = os.environ.get("SYSCHECK_DATA_HOME")
+
+    path = None
+    if env_path:
+        path = env_path
+    else:
+        path = default_path
+
+    return Workspace(path)
+
 class Workspace():
 
     def __init__(self, location):
