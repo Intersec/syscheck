@@ -78,3 +78,19 @@ class TestRequirement(unittest.TestCase):
         req = task.requirements["TEST_TASK_001__REQ_ANY_TRUE"]
         self.assertTrue(requirements.solve_element(task, req,
                                                    req["automatic_check"]))
+
+    def test_key_value_database_access(self):
+        self.environment.key_value_db.set_value("task_conf_path",
+                                                self.task_cfg_path["task-001"])
+        req_id = "TEST_TASK_001__REQ_KV_DB_ACCESS"
+        task = Task(self.workspace, self.environment)
+        kv_db = task.get_env_key_value_db()
+        req = task.requirements["TEST_TASK_001__REQ_KV_DB_ACCESS"]
+
+        kv_db.set_value(req_id, "Hello world!")
+        self.assertTrue(requirements.solve_element(task, req,
+                                                   req["automatic_check"]))
+
+        kv_db.remove_key(req_id)
+        self.assertFalse(requirements.solve_element(task, req,
+                                                    req["automatic_check"]))

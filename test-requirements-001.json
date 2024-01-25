@@ -71,4 +71,8 @@
     "label": "Auto check is true but dependency is false",
     "dependencies": [ "TEST_TASK_001__REQ_FALSE" ],
     "automatic_check": [ "generic_tools.true" ]
+}, {
+    "id": "TEST_TASK_001__REQ_KV_DB_ACCESS",
+    "label": "Test db_tools.is_set",
+    "automatic_check": [ "db_tools.is_set" ]
 }]
