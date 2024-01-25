@@ -67,6 +67,17 @@ class TestWorkspace(unittest.TestCase):
         workspace = Workspace(workspace_location)
         self.assertTrue(os.path.isfile(f"{workspace_location}/collection.db"))
 
+    def test_workspace_path_is_trimmed(self):
+        function_name = inspect.getframeinfo(inspect.currentframe()).function
+        workspace_location = f"{self.tmp_dir.name}/{function_name}"
+
+        # Add a trailing '/' in the workspace location and check it doesn't
+        # change the directory's name and the databases path.
+        workspace = Workspace(workspace_location + "/")
+        self.assertTrue(os.path.isdir(workspace_location))
+        self.assertTrue(os.path.isfile(f"{workspace_location}/key_value.db"))
+        self.assertTrue(os.path.isfile(f"{workspace_location}/collection.db"))
+
     def test_collection_updated_at_environment_creation(self):
         function_name = inspect.getframeinfo(inspect.currentframe()).function
         workspace_location = f"{self.tmp_dir.name}/{function_name}"

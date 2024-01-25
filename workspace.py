@@ -17,7 +17,6 @@ class InvalidEnvironmentName(Exception):
 class Workspace():
 
     def __init__(self, location):
-        # TODO tests: test the ending '/' is trimmed
         self.location = location.rstrip("/")
 
         common.create_dir_if_necessary(self.location)
@@ -32,7 +31,6 @@ class Workspace():
         return self.collection_db.get_values("environments")
 
     def _check_environment_name(self, env_name):
-        # TODO test creating environments with wrong names
         for letter in env_name:
             if not (letter.isalnum() or letter == '-' or letter == '_'):
                 return False
