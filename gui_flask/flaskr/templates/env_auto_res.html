@@ -1,72 +1,71 @@
 {% macro render_manual_resolution(id, resolution) -%}
-<span class="code_block">{{ resolution["description"] | format_description(task) }}</span>
+  <span class="code_block">{{ resolution["description"] | format_description(task) }}</span>
 {%- endmacro %}
 
 {% macro render_auto_resolution(id, resolution) -%}
-<div class="preview">
+  <div class="preview">
     <pre>{{ resolution["steps"] | jsonify }}</pre>
-</div>
-<form>
+  </div>
+  <form>
     <input type="hidden" name="res_id" value="{{id}}">
     <input type="submit" name="run_auto_res" value="Start automatic resolution"/>
-</form>
+  </form>
 {%- endmacro %}
 
 {% macro render_user_input_resolution(id, resolution) -%}
-<form>
+  <form>
     <input type="hidden" name="res_id" value="{{id}}">
     <ul>
-        <li>
-            {{ render_input_text(id, "value", "Value") }}
-        </li>
-        <li>
-            <input type="submit" name="set_value" value="Set value"/>
-        </li>
+      <li>
+        {{ render_input_text(id, "value", "Value") }}
+      </li>
+      <li>
+        <input type="submit" name="set_value" value="Set value"/>
+      </li>
     </ul>
-</form>
+  </form>
 {%- endmacro %}
 
 {% macro render_resolution(id, resolution) -%}
-{% call render_collapsible_element(id, resolution["label"]) %}
-{% if resolution["method"] == "ui.manual" %}
-{{ render_manual_resolution(id, resolution) }}
-{% elif resolution["method"] == "automatic" %}
-{{ render_auto_resolution(id, resolution) }}
-{% elif resolution["method"] == "ui.user_input" %}
-{{ render_user_input_resolution(id, resolution) }}
-{% else %}
-<div>
-    Not displaying resolution '{{resolution["label"]}}' with unknown resolution method '{{resolution["method"]}}'
-</div>
-{% endif %}
-{% endcall %}
+  {% call render_collapsible_element(id, resolution["label"]) %}
+    {% if resolution["method"] == "ui.manual" %}
+      {{ render_manual_resolution(id, resolution) }}
+    {% elif resolution["method"] == "automatic" %}
+      {{ render_auto_resolution(id, resolution) }}
+    {% elif resolution["method"] == "ui.user_input" %}
+      {{ render_user_input_resolution(id, resolution) }}
+    {% else %}
+      <div>
+        Not displaying resolution '{{resolution["label"]}}' with unknown resolution method '{{resolution["method"]}}'
+      </div>
+    {% endif %}
+  {% endcall %}
 {%- endmacro %}
 
 {% extends 'base.html' %}
 {% from 'base.html' import render_collapsible_element with context %}
 
 {% block links %}
-<link rel="stylesheet" href="{{ url_for('static', filename='env_auto_res.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='env_auto_res.css') }}">
 {% endblock %}
 
 {% block header %}
-<h1>{% block title %}Resolution of requirement '{{ req["label"] }}'{% endblock %}</h1>
+  <h1>{% block title %}Resolution of requirement '{{ req["label"] }}'{% endblock %}</h1>
 {% endblock %}
 
 {% block content %}
-<a id="env_auto_res_back_to_tree"
-   href="{{ url_for('env.page_env_tree') }}">Back to tree</a>
-{% with req_status = task.check_requirement_status(req) %}
-<div id="env_auto_res_req_status"
-     class="{% if req_status %}req_fulfilled{% else %}req_not_fulfilled{% endif %}">
-    {% if req_status %}
-    Requirement is fulfilled
-    {% else %}
-    Requirement not fulfilled
-    {% endif %}
-</div>
-{% endwith %}
-{% for res_id, res in req["resolution"].items() %}
-{{ render_resolution(res_id, res) }}
-{% endfor %}
+  <a id="env_auto_res_back_to_tree" href="{{ url_for('env.page_env_tree') }}">Back to tree</a>
+  {% with req_status = task.check_requirement_status(req) %}
+    <div id="env_auto_res_req_status"
+         class="{% if req_status %}req_fulfilled{% else %}req_not_fulfilled{% endif %}">
+         {% if req_status %}
+           Requirement is fulfilled
+         {% else %}
+           Requirement not fulfilled
+         {% endif %}
+    </div>
+  {% endwith %}
+  {% for res_id, res in req["resolution"].items() %}
+    {{ render_resolution(res_id, res) }}
+  {% endfor %}
 {% endblock %}
