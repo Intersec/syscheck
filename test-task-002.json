@@ -1,0 +1,5 @@
+{
+    "id": "test-task-002",
+    "requirement": "TEST_TASK_001__REQ_FALSE",
+    "requirements_file": "./test-dir/../test-requirements-001.json"
+}

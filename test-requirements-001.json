@@ -1,0 +1,41 @@
+[{
+    "id": "TEST_TASK_001__REQ_TRUE",
+    "label": "Automatic check returns true",
+    "automatic_check": [ "generic_tools.true" ]
+}, {
+    "id": "TEST_TASK_001__REQ_FALSE",
+    "label": "Automatic check returns false",
+    "automatic_check": [ "generic_tools.false" ]
+}, {
+    "id": "TEST_TASK_001__REQ_EACH_TRUE",
+    "label": "Automatic check is recursive",
+    "automatic_check": [ "generic_tools.each",
+                         [ "generic_tools.true" ],
+                         [ "generic_tools.true" ]
+                       ]
+}, {
+    "id": "TEST_TASK_001__REQ_EACH_FALSE",
+    "label": "Automatic check uses 'each' and returns false",
+    "automatic_check": [ "generic_tools.each",
+                         [ "generic_tools.false" ],
+                         [ "generic_tools.true" ]
+                       ]
+}, {
+    "id": "TEST_TASK_001__REQ_ANY_TRUE",
+    "label": "Automatic check uses 'any' and returns true",
+    "automatic_check": [ "generic_tools.any",
+                         [ "generic_tools.true" ],
+                         [ "generic_tools.false" ]
+                       ]
+}, {
+    "id": "TEST_TASK_001__REQ_ANY_FALSE",
+    "label": "Automatic check uses 'each' and returns false",
+    "automatic_check": [ "generic_tools.any",
+                         [ "generic_tools.false" ],
+                         [ "generic_tools.false" ]
+                       ]
+}, {
+    "id": "TEST_TASK_001__REQ_NO_RESULT",
+    "label": "Automatic check returns 'None'",
+    "automatic_check": [ "generic_tools.none" ]
+}]
