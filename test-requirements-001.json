@@ -103,4 +103,9 @@
     "label": "Automatic resolution and automatic check use different database key",
     "automatic_check": [ "db_tools.is_set", "env", "key001" ],
     "automatic_resolution": [ "db_tools.set_value", "env", "key002", "value002" ]
+}, {
+    "id": "TEST_TASK_001__REQ_DEP_BUT_NO_RESULT",
+    "label": "Automatic check returns 'None'",
+    "dependencies": [ "TEST_TASK_001__REQ_FALSE" ],
+    "automatic_check": [ "generic_tools.none" ]
 }]

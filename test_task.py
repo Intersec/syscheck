@@ -193,6 +193,13 @@ class TestTask(unittest.TestCase):
         with self.assertRaisesRegex(AssertionError, expected_msg):
             task.apply_automatic_resolution(req["id"])
 
+    def test_auto_check_with_dependencies_not_met(self):
+        task = self._get_task("task-001")
+        # The automatic check will raise a NotBool exception if it is run so
+        # if no exception is raised this is that the automatic check was
+        # indeed not run.
+        task.check_requirement_status("TEST_TASK_001__REQ_DEP_BUT_NO_RESULT")
+
     def test_auto_res(self):
         def initialize_repo(repo_dir):
             """Initialize a directory with a git repository
