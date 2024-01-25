@@ -39,6 +39,12 @@ class Workspace():
         collection_db_location = f"{self.location}/collection.db"
         self.collection_db = CollectionDatabase(collection_db_location)
 
+    def get_key_value_db(self):
+        return self.key_value_db
+
+    def get_collection_db(self):
+        return self.collection_db
+
     def get_environments_list(self):
         return self.collection_db.get_values("environments")
 
