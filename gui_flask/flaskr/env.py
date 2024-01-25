@@ -33,33 +33,58 @@ def run_auto_res(task, req_id):
 
     return success
 
-def set_value(task, req_id):
+def check_user_input_resolution(task, req, res_id):
     success = True
-    res_id = request.args.get("res_id")
-    value = request.args.get("assisted_user_input_value")
-    req = task.get_requirement(req_id)
-    res = req["resolution"][res_id]
-    db = res.get("db")
-    key = res.get("key")
+
+    resolutions = req.get("resolution")
+    if not resolutions:
+        flash("No resolutions for this requirement", "error")
+        return False
 
     if not res_id:
-        success = False
-        flash("Resolution ID is mandatory", "error")
+        flash(f"Reolution ID is mandatory", "error")
+        return False
 
+    res = resolutions.get(res_id)
+    if not resolutions:
+        flash(f"Resolution {res_id} does not exists", "error")
+        return False
+
+    db = res.get("db")
+    if not db:
+        success = False
+        flash(f"Database absent from configuration", "error")
+
+    key = res.get("key")
+    if not key:
+        success = False
+        flash(f"Key absent from configuration", "error")
+
+    return success
+
+def set_value_from_user(task, req_id):
+    success = True
+
+    value = request.args.get("assisted_user_input_value")
     if not value:
         success = False
         flash("Value is mandatory", "error")
 
-    if not db:
-        success = False
-        flash("Database not set in resolution's configuration", "error")
+    req = task.get_requirement(req_id)
+    if not req:
+        flash(f"Requirement {req_id} does not exists", "error")
+        return False
 
-    if not key:
+    res_id = request.args.get("res_id")
+    if not check_user_input_resolution(task, req, res_id):
         success = False
-        flash("Key not set in resolution's configuration", "error")
 
     if not success:
         return False
+
+    res = req["resolution"][res_id]
+    db = res["db"]
+    key = res["key"]
 
     db_tools.set_value(task, req, [db, key, value])
     flash("Value successfully set", "notice")
@@ -182,7 +207,7 @@ def page_auto_res(req_id=None):
                 return redirect(url_for("env.page_auto_res", req_id=req_id))
 
         if request.args.get("set_value"):
-            if set_value(task, req_id):
+            if set_value_from_user(task, req_id):
                 return redirect(url_for("env.page_auto_res", req_id=req_id))
 
     try:
