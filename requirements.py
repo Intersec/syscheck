@@ -49,9 +49,9 @@ def solve_element(task, requirement, element):
 
     """
 
-    # TODO: if the element is empty it will raise an exception but this
-    # function could be called for a requirement with no check or no automatic
-    # resolution.
+    if len(element) == 0:
+        return True
+
     _import_function_if_necessary(element[0])
 
     arguments = []

@@ -7,6 +7,10 @@
     "label": "Automatic check returns false",
     "automatic_check": [ "generic_tools.false" ]
 }, {
+    "id": "TEST_TASK_001__REQ_EMPTY",
+    "label": "Automatic check returns false",
+    "automatic_check": []
+}, {
     "id": "TEST_TASK_001__REQ_EACH_TRUE",
     "label": "Automatic check is recursive",
     "automatic_check": [ "generic_tools.each",

@@ -39,6 +39,14 @@ class TestRequirement(unittest.TestCase):
         self.assertFalse(requirements.solve_element(task, req,
                                                     req["automatic_check"]))
 
+    def test_empty_element(self):
+        self.environment.key_value_db.set_value("task_conf_path",
+                                                self.task_cfg_path["task-001"])
+        task = Task(self.workspace, self.environment)
+        req = task.requirements["TEST_TASK_001__REQ_EMPTY"]
+        self.assertTrue(requirements.solve_element(task, req,
+                                                   req["automatic_check"]))
+
     def test_element_each_false(self):
         self.environment.key_value_db.set_value("task_conf_path",
                                                 self.task_cfg_path["task-001"])
