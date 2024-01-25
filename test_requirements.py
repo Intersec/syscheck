@@ -23,67 +23,57 @@ class TestRequirement(unittest.TestCase):
     def tearDown(self):
         pass
 
+    def _get_task(self, task_name_from_cfg):
+        task_path = self.task_cfg_path[task_name_from_cfg]
+        self.environment.key_value_db.set_value("task_conf_path", task_path)
+
+        return Task(self.workspace, self.environment)
+
     def test_basic_element_true(self):
-        self.environment.key_value_db.set_value("task_conf_path",
-                                                self.task_cfg_path["task-001"])
-        task = Task(self.workspace, self.environment)
+        task = self._get_task("task-001")
         req = task.requirements["TEST_TASK_001__REQ_TRUE"]
         self.assertTrue(requirements.solve_element(task, req,
                                                    req["automatic_check"]))
 
     def test_basic_element_false(self):
-        self.environment.key_value_db.set_value("task_conf_path",
-                                                self.task_cfg_path["task-001"])
-        task = Task(self.workspace, self.environment)
+        task = self._get_task("task-001")
         req = task.requirements["TEST_TASK_001__REQ_FALSE"]
         self.assertFalse(requirements.solve_element(task, req,
                                                     req["automatic_check"]))
 
     def test_empty_element(self):
-        self.environment.key_value_db.set_value("task_conf_path",
-                                                self.task_cfg_path["task-001"])
-        task = Task(self.workspace, self.environment)
+        task = self._get_task("task-001")
         req = task.requirements["TEST_TASK_001__REQ_EMPTY"]
         self.assertTrue(requirements.solve_element(task, req,
                                                    req["automatic_check"]))
 
     def test_element_each_false(self):
-        self.environment.key_value_db.set_value("task_conf_path",
-                                                self.task_cfg_path["task-001"])
-        task = Task(self.workspace, self.environment)
+        task = self._get_task("task-001")
         req = task.requirements["TEST_TASK_001__REQ_EACH_FALSE"]
         self.assertFalse(requirements.solve_element(task, req,
                                                     req["automatic_check"]))
 
     def test_element_each_true(self):
-        self.environment.key_value_db.set_value("task_conf_path",
-                                                self.task_cfg_path["task-001"])
-        task = Task(self.workspace, self.environment)
+        task = self._get_task("task-001")
         req = task.requirements["TEST_TASK_001__REQ_EACH_TRUE"]
         self.assertTrue(requirements.solve_element(task, req,
                                                    req["automatic_check"]))
 
     def test_element_any_false(self):
-        self.environment.key_value_db.set_value("task_conf_path",
-                                                self.task_cfg_path["task-001"])
-        task = Task(self.workspace, self.environment)
+        task = self._get_task("task-001")
         req = task.requirements["TEST_TASK_001__REQ_ANY_FALSE"]
         self.assertFalse(requirements.solve_element(task, req,
                                                     req["automatic_check"]))
 
     def test_element_any_true(self):
-        self.environment.key_value_db.set_value("task_conf_path",
-                                                self.task_cfg_path["task-001"])
-        task = Task(self.workspace, self.environment)
+        task = self._get_task("task-001")
         req = task.requirements["TEST_TASK_001__REQ_ANY_TRUE"]
         self.assertTrue(requirements.solve_element(task, req,
                                                    req["automatic_check"]))
 
     def test_key_value_database_access(self):
-        self.environment.key_value_db.set_value("task_conf_path",
-                                                self.task_cfg_path["task-001"])
+        task = self._get_task("task-001")
         req_id = "TEST_TASK_001__REQ_KV_DB_ACCESS"
-        task = Task(self.workspace, self.environment)
         kv_db = task.get_env_key_value_db()
         req = task.requirements["TEST_TASK_001__REQ_KV_DB_ACCESS"]
 
