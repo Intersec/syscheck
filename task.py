@@ -99,7 +99,7 @@ class Task():
                         return False
             return True
 
-        def check_requirement_auto_res(req):
+        def run_requirement_auto_check(req):
             auto_check = req["automatic_check"]
             res = requirements.solve_element(self, req, auto_check)
 
@@ -117,7 +117,7 @@ class Task():
         if not check_requirement_dependencies(req):
             return False
 
-        if not check_requirement_auto_res(req):
+        if not run_requirement_auto_check(req):
             return False
 
         return True
