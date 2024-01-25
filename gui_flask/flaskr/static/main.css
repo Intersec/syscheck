@@ -1,0 +1,209 @@
+
+/* Main blocks */
+
+html {
+    min-height: 100%;
+    min-width: 1000px;
+    height: 100%;
+    font-family: "Gill Sans", sans-serif;
+}
+
+body {
+    height: 100%;
+    margin: 0px;
+    display: grid;
+    grid-template-columns: 300px auto;
+    background-color: #CED4DA;
+}
+
+/* Generic objects */
+
+/* *** Collapsible */
+
+.collapsible {
+    background-color: white;
+    /* border: 1px solid grey; */
+    margin: 10px 0;
+    padding: 5px;
+}
+
+.collapsible > label {
+    display: block;
+    padding: 10px;
+    padding-left: 15px;
+}
+
+.collapsible > input:checked + label + div {
+    display: initial;
+}
+
+.collapsible > label::before {
+    display: inline-block;
+    content: "v";
+    width: 15px;
+    height: 10px;
+    transform: rotate(0deg);
+    position: relative;
+    left: -5px;
+    transition: transform 0.25s, top 0s, left 0s;
+}
+
+.collapsible > input:checked + label::before {
+    transform: rotate(180deg);
+    top: 10px;
+    left: -10px;
+    transition: transform 0.25s, top 0s, left 0s;
+}
+
+.collapsible > input, .collapsible > input + label + div {
+    display: none;
+}
+
+/* *** Form */
+
+form ul {
+    margin: 0;
+}
+
+form li {
+    list-style-type: none;
+    margin: 5px 0;
+    font-size: 0;
+}
+
+form li label {
+    width: 200px;
+    display: inline-block;
+    text-align: center;
+    font-size: initial;
+}
+
+form li label + input, form li label input {
+    width: 285px;
+    display: inline-block;
+    border: 0px;
+    border-radius: 3px;
+    background-color: #EEF2F7;
+    height: 30px;
+    padding: 0 0 0 15px;
+}
+
+form input[type="submit"] {
+    background-color: #727CF5;
+    cursor: pointer;
+    border-radius: 3px;
+    border: 0px;
+    padding: 5px 10px;
+    margin-left: 200px;
+    width: 300px;
+    color: white;
+    height: 30px;
+}
+
+form input[type="submit"]:hover {
+    background-color: #6973E3;
+    cursor: pointer;
+}
+
+form input[type="submit"]:disabled, form input[type="submit"]:disabled:hover {
+    background-color: #39AFD1;
+    color: lightgrey;
+    cursor: not-allowed;
+}
+
+form select {
+    border: 0px;
+    border-radius: 3px;
+    background-color: #EEF2F7;
+    height: 30px;
+    padding-left: 15px;
+}
+
+/* *** Flash messages */
+
+div.flash {
+    border-radius: 10px;
+    padding: 10px 20px;
+    margin-bottom: 10px;
+}
+
+div.flash span {
+    font-weight: bold;
+}
+
+div.flash ul {
+    padding: 0;
+    list-style-type: none;
+    margin: 0 0 0 20px;
+}
+
+div.flash ul li {
+    margin: 5px 0;
+}
+
+div.flash-error {
+    color: white;
+    background-color: #FA5C7C;
+}
+
+div.flash-warning {
+    background-color: #FFF9EF;
+}
+
+div.flash-notice {
+    background-color: #EBF7FA;
+}
+
+/* Navigation element */
+
+nav {
+    background-color: #313A46;
+    color: white;
+}
+
+nav > ul {
+    list-style-type: none;
+    padding: 30px 0 0;
+    margin: 0;
+}
+
+nav > ul > li {
+}
+
+nav > ul > li > a {
+    display: block;
+    padding: 10px 30px;
+    margin: 5px 0px;
+    color: white;
+    text-decoration: none;
+}
+
+nav > ul > li > a:hover {
+}
+
+nav .current_env {
+    text-align: center;
+    border: 1px solid grey;
+    border-radius: 10px;
+    margin: 0 20px 30px 20px;
+}
+
+nav .current_env span {
+    display: block;
+    margin: 5px 0;
+}
+
+nav .current_env span.current_env_name {
+    font-weight: bold;
+}
+
+/* Main content */
+
+section.content {
+    padding: 20px;
+}
+
+section.content header {
+    text-align: center;
+}
+

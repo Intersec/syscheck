@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% from 'base.html' import render_collapsible_element with context %}
+{% from 'base.html' import render_input_text with context %}
+
+{% block header %}
+<h3>{% block title %}Select environment{% endblock %}</h3>
+{% endblock %}
+
+{% block content %}
+
+{% call render_collapsible_element("select_env", "Select environment") %}
+<form>
+    <ul>
+        <li>
+            <label>Environment name</label><select name="select_env_env_name">
+                {% for env_name in env_list %}
+                <option value="{{env_name}}">{{env_name}}</option>
+                {% endfor %}
+            </select>
+        </li>
+        <li>
+            <input type="submit" name="select_env" value="Select environment" />
+        </li>
+    </ul>
+</form>
+{% endcall %}
+
+{% call render_collapsible_element("known_task", "New environment with a known task") %}
+<form>
+    <ul>
+        <li>
+            {{ render_input_text("known_task", "env_name", "Environment name") }}
+        </li>
+        <li>
+            <label>Task configuration file</label><select name="known_task_task_cfg_path">
+                {% for task in tasks_list %}
+                <option
+                    {% if request.args.get("known_task_task_cfg_path") == task %}selected{% endif %}
+                    value="{{task}}">
+                    {{task}}
+                </option>
+                {% endfor %}
+            </select>
+        </li>
+        <li>
+            <input type="submit" name="known_task" value="Create environment" />
+        </li>
+    </ul>
+</form>
+{% endcall %}
+
+{% call render_collapsible_element("create_env", "Create environment") %}
+<form>
+    <ul>
+        <li>
+            {{ render_input_text("create_env", "env_name", "Environment name") }}
+        </li>
+        <li>
+            {{ render_input_text("create_env", "task_cfg_path", "Task configuration file") }}
+        </li>
+        <li>
+            <input type="submit" name="create_env" value="Create environment" />
+        </li>
+    </ul>
+</form>
+{% endcall %}
+
+{% call render_collapsible_element("forget_env", "Forget current environment") %}
+<form>
+    <ul>
+        <li>
+            <input type="submit"
+                   name="forget_env"
+                   {% if not session["env_name"] %}disabled{% endif %}
+                   value="Unset current environment" />
+        </li>
+    </ul>
+</form>
+{% endcall %}
+
+{% endblock %}

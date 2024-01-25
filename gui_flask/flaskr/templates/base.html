@@ -1,0 +1,86 @@
+{% macro render_collapsible_element(collapse_name, label) -%}
+<div class="collapsible">
+    <input type="checkbox" id="collapse_{{ collapse_name }}"
+           {% if request.args.get(collapse_name) %}checked{% endif %} />
+    <label for="collapse_{{ collapse_name }}">{{ label }}</label>
+    <div>
+        {{ caller() }}
+    </div>
+</div>
+{%- endmacro %}
+
+{% macro render_input_text(form_id, name, label) -%}
+{% with input_id = form_id + "_" + name %}
+<label for="{{input_id}}">{{label}}</label>
+<input id="{{input_id}}"
+       {% if request.args.get(input_id) %}
+       value="{{ request.args.get(input_id) }}"
+       {% endif %}
+       name="{{input_id}}" />
+{% endwith %}
+{%- endmacro %}
+
+<!doctype html>
+<title>{% block title %}{% endblock %} - Syscheck</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+{% block links %}{% endblock %}
+<nav>
+    <ul>
+        {% if session["env_name"] %}
+        <li class="current_env">
+            <span class="current_env_label">Current environment</span>
+            <span class="current_env_name">
+                {{ session["env_name"] }}
+            </span>
+        </li>
+        <li><a href="{{ url_for('env.page_env_tree') }}">Environment's tree</a></li>
+        {% endif %}
+        <li><a href="{{ url_for('select_env.page_select_env') }}">Change environment</a></li>
+        <li><a href="{{ url_for('db_tools.page_db_tools') }}">Database tools</a></li>
+        {% if g.environment %}
+        <li><a href="{{ url_for('env.tree') }}">Display requirements tree</a></li>
+        {% endif %}
+    </ul>
+</nav>
+<section class="content">
+    <header>
+        {% block header %}{% endblock %}
+    </header>
+    {% with errors = get_flashed_messages(category_filter=["error"]) %}
+    {% if errors %}
+    <div class="flash flash-error">
+        <span>Error:</span>
+        <ul>
+            {% for message in errors %}
+            <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+    {% endwith %}
+    {% with warnings = get_flashed_messages(category_filter=["warning"]) %}
+    {% if warnings %}
+    <div class="flash flash-warning">
+        <span>Warning:</span>
+        <ul>
+            {% for message in warnings %}
+            <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+    {% endwith %}
+    {% with notices = get_flashed_messages(category_filter=["notice"]) %}
+    {% if notices %}
+    <div class="flash flash-notice">
+        <span>Notice:</span>
+        <ul>
+            {% for message in notices %}
+            <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+</section>
