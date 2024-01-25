@@ -47,29 +47,66 @@
     "label": "Automatic_check parameter is a requirement and not a function",
     "automatic_check": [ "TEST_TASK_001__REQ_FALSE" ]
 }, {
-    "id": "TEST_TASK_001__REQ_INVAL_DEP_001",
-    "label": "Dependency not a list",
-    "dependencies": "TEST_TASK_001__REQ_TRUE",
-    "automatic_check": [ "generic_tools.false" ]
-}, {
     "id": "TEST_TASK_001__REQ_INVAL_DEP_002",
     "label": "Dependency do not exists",
-    "dependencies": [ "REQ_DO_NOT_EXISIS" ],
+    "dependencies": "REQ_DO_NOT_EXISIS",
     "automatic_check": [ "generic_tools.false" ]
 }, {
     "id": "TEST_TASK_001__REQ_DEP_TRUE",
     "label": "Auto check is false but dependency is true",
-    "dependencies": [ "TEST_TASK_001__REQ_TRUE" ],
+    "dependencies": "TEST_TASK_001__REQ_TRUE",
     "automatic_check": [ "generic_tools.false" ]
 }, {
     "id": "TEST_TASK_001__REQ_DEP_AND_CHECK_TRUE",
     "label": "Auto check and dependency are both true",
-    "dependencies": [ "TEST_TASK_001__REQ_TRUE" ],
+    "dependencies": "TEST_TASK_001__REQ_TRUE",
     "automatic_check": [ "generic_tools.true" ]
 }, {
     "id": "TEST_TASK_001__REQ_DEP_FALSE",
     "label": "Auto check is true but dependency is false",
-    "dependencies": [ "TEST_TASK_001__REQ_FALSE" ],
+    "dependencies": "TEST_TASK_001__REQ_FALSE",
+    "automatic_check": [ "generic_tools.true" ]
+}, {
+    "id": "TEST_TASK_001__REQ_DEP_LIST_ANY_TRUE",
+    "label": "Dependencies are a list using any",
+    "dependencies": [ "any",
+                      "TEST_TASK_001__REQ_FALSE",
+                      "TEST_TASK_001__REQ_TRUE" ],
+    "automatic_check": [ "generic_tools.true" ]
+}, {
+    "id": "TEST_TASK_001__REQ_DEP_LIST_ANY_FALSE",
+    "label": "Dependencies are a list using any",
+    "dependencies": [ "any",
+                      "TEST_TASK_001__REQ_FALSE",
+                      "TEST_TASK_001__REQ_FALSE" ],
+    "automatic_check": [ "generic_tools.true" ]
+}, {
+    "id": "TEST_TASK_001__REQ_DEP_LIST_EACH_TRUE",
+    "label": "Dependencies are a list using any",
+    "dependencies": [ "each",
+                      "TEST_TASK_001__REQ_TRUE",
+                      "TEST_TASK_001__REQ_TRUE" ],
+    "automatic_check": [ "generic_tools.true" ]
+}, {
+    "id": "TEST_TASK_001__REQ_DEP_LIST_EACH_FALSE",
+    "label": "Dependencies are a list using any",
+    "dependencies": [ "each",
+                      "TEST_TASK_001__REQ_TRUE",
+                      "TEST_TASK_001__REQ_FALSE" ],
+    "automatic_check": [ "generic_tools.true" ]
+}, {
+    "id": "TEST_TASK_001__REQ_DEP_COMPLEX_EACH_TRUE",
+    "label": "Dependencies are a complex list",
+    "dependencies": [ "any",
+                      [ "each", "TEST_TASK_001__REQ_TRUE", "TEST_TASK_001__REQ_FALSE" ],
+                      [ "any", "TEST_TASK_001__REQ_TRUE", "TEST_TASK_001__REQ_FALSE" ] ],
+    "automatic_check": [ "generic_tools.true" ]
+}, {
+    "id": "TEST_TASK_001__REQ_DEP_COMPLEX_EACH_FALSE",
+    "label": "Dependencies are a complex list",
+    "dependencies": [ "each",
+                      [ "any", "TEST_TASK_001__REQ_FALSE", "TEST_TASK_001__REQ_TRUE" ],
+                      [ "each", "TEST_TASK_001__REQ_TRUE", "TEST_TASK_001__REQ_FALSE" ] ],
     "automatic_check": [ "generic_tools.true" ]
 }, {
     "id": "TEST_TASK_001__REQ_KV_DB_ACCESS",
@@ -86,7 +123,8 @@
 }, {
     "id": "TEST_TASK_001__SIMPLE_AUTO_RES",
     "label": "Automatic resolution with a git repository",
-    "dependencies": [ "TEST_TASK_001__SIMPLE_AUTO_RES_REPO_PATH",
+    "dependencies": [ "each",
+                      "TEST_TASK_001__SIMPLE_AUTO_RES_REPO_PATH",
                       "TEST_TASK_001__SIMPLE_AUTO_RES_REPO_BRANCH" ],
     "automatic_check": [
         "git_tools.is_branch_checked_out",
@@ -127,6 +165,6 @@
 }, {
     "id": "TEST_TASK_001__REQ_DEP_BUT_NO_RESULT",
     "label": "Automatic check returns 'None'",
-    "dependencies": [ "TEST_TASK_001__REQ_FALSE" ],
+    "dependencies": "TEST_TASK_001__REQ_FALSE",
     "automatic_check": [ "generic_tools.none" ]
 }]

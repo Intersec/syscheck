@@ -93,21 +93,43 @@ class Task():
         itself.
 
         """
+
+        def check_dependencies(dependencies):
+            if type(dependencies) == str:
+                return self.check_requirement_status(dependencies)
+
+            elif type(dependencies) == list:
+                if len(dependencies) < 2:
+                    msg = f"Expect at least a method and an element"
+                    raise InvalidConfiguration(msg, dependencies)
+
+                method = dependencies[0]
+
+                elts = []
+                for elt in dependencies[1:]:
+                    elts.append(check_dependencies(elt))
+
+                if method == "any":
+                    return True in elts
+                elif method == "each":
+                    return not False in elts
+                else:
+                    msg = f"Invalid dependency method"
+                    raise InvalidConfiguration(msg, method, dependencies)
+            else:
+                msg = f"Unexpected type of dependencies"
+                raise InvalidConfiguration(msg, dependencies)
+
         if type(req_arg) is str:
             req = self.get_requirement(req_arg)
         else:
             req = req_arg
 
-        if "dependencies" in req.keys():
-            dependencies = req["dependencies"]
-            if not type(dependencies) == list:
-                msg = f"Dependencies for '{req['id']}' is not an array"
-                raise InvalidConfiguration(msg)
+        if "dependencies" not in req.keys():
+            # Dependencies are good if there are none.
+            return True
 
-            for req_id in dependencies:
-                if not self.check_requirement_status(req_id):
-                    return False
-        return True
+        return check_dependencies(req["dependencies"])
 
     def apply_automatic_resolution(self, req_arg, res_id):
         """Apply a requirement's automatic resolution.
