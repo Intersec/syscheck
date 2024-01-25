@@ -4,7 +4,7 @@ def _get_key_value_db(task, arg_db):
     elif arg_db == "common":
         db = task.get_workspace_key_value_db()
     else:
-        raise ValueError(f"Invalid DB {arg_db}, expect 'env' or 'common'")
+        raise ValueError(f"Invalid DB '{arg_db}', expect 'env' or 'common'")
 
     return db
 
