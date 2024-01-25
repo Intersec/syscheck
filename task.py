@@ -1,5 +1,6 @@
 import json
 import os
+import sys
 
 import environment
 import requirements
@@ -44,9 +45,10 @@ class Task():
         self.id = task_json["id"]
         self.target_requirement_name = task_json["requirement"]
 
+        task_file_directory = os.path.dirname(task_file)
+
         requirements_file = task_json["requirements_file"]
         if not os.path.isabs(requirements_file):
-            task_file_directory = os.path.dirname(task_file)
             requirements_file = os.path.join(task_file_directory, requirements_file)
 
         try:
@@ -62,6 +64,14 @@ class Task():
             if requirement["id"] in self.requirements:
                 raise DupplicateRequirement(requirement["id"])
             self.requirements[requirement["id"]] = requirement
+
+        if task_json.get("libraries_paths"):
+            lib_paths = task_json["libraries_paths"]
+            for path in lib_paths:
+                if not os.path.isabs(path):
+                    path = os.path.join(task_file_directory, path)
+                if not path in sys.path:
+                    sys.path.append(path)
 
     def get_target_requirement_name(self):
         return self.target_requirement_name
