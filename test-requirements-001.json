@@ -196,10 +196,16 @@
             "method": "ui.manual",
             "description": "git -C '[<repo_path>|env.key001]' checkout '[<branch>|env.key002]'"
         },
-        "auto_default": {
-            "label": "Automatic, setting a default value",
+        "assisted_user_default": {
+            "label": "Assisted, using one default value",
             "method": "automatic",
             "steps": [ "db_tools.set_value", "env", "key002", "debug-0.1" ]
+        },
+        "assisted_user_default_db": {
+            "label": "Assisted, using one default value from database",
+            "method": "automatic",
+            "steps": [ "db_tools.set_value", "env", "key002",
+                       [ "db_tools.get_value", "env", "key001" ] ]
         },
         "assisted_user_input": {
             "label": "Assisted, using user input",
@@ -207,28 +213,19 @@
             "db": "env",
             "key": "key002"
         },
-        "assisted_user_default": {
-            "label": "Assisted, using one default value",
-            "method": "ui.default",
-            "src_value": "release-0.1",
-            "dst_db": "env",
-            "dst_key": "key002"
-        },
-        "assisted_user_default_db": {
-            "label": "Assisted, using one default value from database",
-            "method": "ui.default",
-            "src_db": "env",
-            "src_key": "key001",
-            "dst_db": "env",
-            "dst_key": "key002"
+        "assisted_user_input_key001": {
+            "label": "Assisted, using user input for first key",
+            "method": "ui.user_input",
+            "db": "env",
+            "key": "key001"
         },
         "assisted_user_select": {
             "label": "Assisted, using default values",
-            "method": "ui.select",
+            "method": "ui.user_select",
             "src_db": "common",
-            "src_key": "git_repo",
-            "dst_db": "env",
-            "dst_key": "key002"
+            "src_collection": "known_tasks",
+            "db": "env",
+            "key": "key002"
         },
         "reset": {
             "label": "Reset",
