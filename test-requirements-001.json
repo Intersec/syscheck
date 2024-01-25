@@ -53,7 +53,7 @@
     "automatic_check": [ "generic_tools.false" ]
 }, {
     "id": "TEST_TASK_001__REQ_INVAL_DEP_002",
-    "label": "Dependency not a list",
+    "label": "Dependency do not exists",
     "dependencies": [ "REQ_DO_NOT_EXISIS" ],
     "automatic_check": [ "generic_tools.false" ]
 }, {
