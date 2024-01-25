@@ -65,7 +65,7 @@ def check_user_input_resolution(task, req, res_id):
 def set_value_from_user(task, req_id):
     success = True
 
-    value = request.args.get("assisted_user_input_value")
+    value = request.args.get("user_value")
     if not value:
         success = False
         flash("Value is mandatory", "error")

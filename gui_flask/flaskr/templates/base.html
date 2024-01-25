@@ -9,6 +9,10 @@
 </div>
 {%- endmacro %}
 
+{# TODO: the name should not be the ID. A name is not required to be unique
+and in some pages we have multiple inputs from different forms that can have
+the same name #}
+
 {% macro render_input_text(form_id, name, label) -%}
 {% with input_id = form_id + "_" + name %}
 <label for="{{input_id}}">{{label}}</label>
