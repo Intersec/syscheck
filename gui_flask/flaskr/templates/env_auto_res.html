@@ -2,7 +2,7 @@
 {% from 'base.html' import render_collapsible_element with context %}
 
 {% macro render_manual_resolution(id, resolution) -%}
-  <span class="code_block">{{ resolution["description"] | format_description(task) }}</span>
+  <pre>{{ resolution["description"] | format_description(task) }}</pre>
 {%- endmacro %}
 
 {% macro render_auto_resolution(id, resolution) -%}
