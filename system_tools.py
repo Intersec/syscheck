@@ -81,3 +81,12 @@ def is_mounted(task, requirement, args):
     res = os.system(f"mount | grep ' on {mountpoint}'")
 
     return res == 0
+
+def mkdir(task, requirement, args):
+    if len(args) != 1:
+        usage = "mkdir <path>"
+        raise ValueError(f"Not enough arguments: {usage}")
+
+    path = args[0]
+
+    os.mkdir(path)
