@@ -68,3 +68,16 @@ def binary_exists(task, requirement, args):
     res = os.system(f"which {bin_name}")
 
     return res == 0
+
+def is_mounted(task, requirement, args):
+    if len(args) != 1:
+        usage = "is_mounted <mountpoint>"
+        raise ValueError(f"Not enough arguments: {usage}")
+
+    mountpoint = args[0]
+    if not os.path.isabs(mountpoint):
+        mountpoint = os.path.abspath(mountpoint)
+
+    res = os.system(f"mount | grep ' on {mountpoint}'")
+
+    return res == 0
