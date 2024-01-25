@@ -8,6 +8,7 @@ TESTS := \
 	test_task \
 	test_requirements \
 	test_git_tools \
+	test_db_tools \
 
 all: tests
 

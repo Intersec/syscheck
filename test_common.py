@@ -26,6 +26,23 @@ class FakeEnvironment():
         self.key_value_db = key_value_db
         self.collection_db = collection_db
 
+class FakeTask():
+    def __init__(self, workspace, environment):
+        self.workspace = workspace
+        self.environment = environment
+
+    def get_env_key_value_db(self):
+        return self.environment.key_value_db
+
+    def get_env_collection_db(self):
+        return self.environment.collection_db
+
+    def get_workspace_key_value_db(self):
+        return self.workspace.key_value_db
+
+    def get_workspace_collection_db(self):
+        return self.workspace.collection_db
+
 def get_temporary_filename():
     """Return the path to an empty file that can be modified at will.
 
