@@ -1,4 +1,5 @@
-from key_value_volatile_database import KeyValueVolatileDatabase
+from collection_database import CollectionDatabase
+from common_volatile_database import CommonVolatileDatabase
 
-class CollectionVolatileDatabase(KeyValueVolatileDatabase):
+class CollectionVolatileDatabase(CommonVolatileDatabase, CollectionDatabase):
     pass
