@@ -35,42 +35,6 @@ def select_env():
 
     return success
 
-def common_create_env(env_name, task_path):
-    success = False
-    workspace = get_workspace()
-
-    try:
-        workspace.create_environment(env_name, task_path)
-        session["env_name"] = env_name
-        workspace.get_collection_db().add_value("known_tasks", task_path)
-        flash(f"Environment '{env_name}' successfully created", "notice")
-        success = True
-    except InvalidEnvironmentName:
-        flash(f"Invalid environment name '{env_name}'", "error")
-    except FileNotFoundError:
-        flash(f"Task file '{env_name}' does not exists", "error")
-    except EnvironmentExists:
-        flash(f"Environment '{env_name}' already exists", "error")
-
-    return success
-
-def create_env_using_known_task():
-    success = False
-    env_name = request.args.get("env_name")
-    task_path = request.args.get("task_cfg_path")
-
-    if not env_name:
-        flash("Environment name is mandatory", "error")
-
-    if not task_path:
-        flash("Task file is mandatory", "error")
-
-    if env_name and task_path:
-        if common_create_env(env_name, task_path):
-            success = True
-
-    return success
-
 def create_env():
     success = False
     env_name = request.args.get("env_name")
@@ -83,8 +47,20 @@ def create_env():
         flash("Task file is mandatory", "error")
 
     if env_name and task_path:
-        if common_create_env(env_name, task_path):
+        workspace = get_workspace()
+
+        try:
+            workspace.create_environment(env_name, task_path)
+            session["env_name"] = env_name
+            workspace.get_collection_db().add_value("known_tasks", task_path)
+            flash(f"Environment '{env_name}' successfully created", "notice")
             success = True
+        except InvalidEnvironmentName:
+            flash(f"Invalid environment name '{env_name}'", "error")
+        except FileNotFoundError:
+            flash(f"Task file '{env_name}' does not exists", "error")
+        except EnvironmentExists:
+            flash(f"Environment '{env_name}' already exists", "error")
 
     return success
 
@@ -97,7 +73,7 @@ def page_select_env():
                 return redirect(url_for("select_env.page_select_env"))
 
         if request.args.get("known_task"):
-            if create_env_using_known_task():
+            if create_env():
                 return redirect(url_for("select_env.page_select_env"))
 
         if request.args.get("select_env"):
