@@ -81,7 +81,7 @@ def get_value(task, requirement, args):
         arg_key = args.pop(0)
 
     db = _get_key_value_db(task, arg_db)
-    db.get_value(arg_key, arg_value)
+    return db.get_value(arg_key)
 
 def add_one_value(task, requirement, args):
     arg_db = "env"
@@ -145,5 +145,5 @@ def get_values(task, requirement, args):
         arg_collection = args.pop(0)
 
     db = _get_collection_db(task, arg_db)
-    db.get_values(arg_collection)
+    return db.get_values(arg_collection)
 
