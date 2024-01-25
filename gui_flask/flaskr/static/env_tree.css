@@ -15,12 +15,14 @@
     padding: 0 0 5px 10px;
 }
 
-#env_tree .env_req.req_fulfilled > label {
+#env_tree .env_req.req_fulfilled > a {
     color: green;
+    text-decoration: none;
 }
 
-#env_tree .env_req.req_not_fulfilled > label {
+#env_tree .env_req.req_not_fulfilled > a {
     color: red;
+    text-decoration: none;
 }
 
 #env_tree fieldset.req_fulfilled > legend {

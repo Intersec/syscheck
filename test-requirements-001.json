@@ -173,5 +173,44 @@
     "dependencies": [ "each",
                       [ "any", "TEST_TASK_001__REQ_FALSE", "TEST_TASK_001__REQ_DEP_AND_CHECK_TRUE" ],
                       [ "each", "TEST_TASK_001__REQ_TRUE", "TEST_TASK_001__REQ_DEP_FALSE" ] ],
-    "automatic_check": [ "generic_tools.true" ]
+    "automatic_check": [ "generic_tools.true" ],
+    "resolution": {
+        "manual_res": {
+            "label": "Manual resolution",
+            "method": "ui.manual",
+            "description": "git -C [<repo_path>|env.key001] checkout [<branch>|env.key002]"
+        },
+        "auto_default": {
+            "label": "Automatic, setting a default value",
+            "method": "automatic",
+            "steps": [ "db_tools.set_value", "env", "key002", "value002" ]
+        },
+        "assisted_user_input": {
+            "label": "Assisted, using user input",
+            "method": "ui.user_input",
+            "db": "env",
+            "key": "key002"
+        },
+        "assisted_user_default": {
+            "label": "Assisted, using one default value",
+            "method": "ui.default",
+            "src_db": "env",
+            "src_key": "key001",
+            "dst_db": "env",
+            "dst_key": "key002"
+        },
+        "assisted_user_select": {
+            "label": "Assisted, using default values",
+            "method": "ui.select",
+            "src_db": "common",
+            "src_key": "workspaces",
+            "dst_db": "env",
+            "dst_key": "key002"
+        },
+        "reset": {
+            "label": "Reset",
+            "method": "automatic",
+            "steps": [ "db_tools.set_value", "generic_tools.none" ]
+        }
+    }
 }]

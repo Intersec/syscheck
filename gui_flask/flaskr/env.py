@@ -71,6 +71,7 @@ def render_dependencies(task, dep_arg):
 def render_requirement(task, req_id):
     req = task.get_requirement(req_id)
     req_label = req['label']
+    req_res_url = url_for('env.page_auto_res', req_id=req_id)
 
     req_fulfilled = task.check_requirement_status(req)
 
@@ -83,7 +84,7 @@ def render_requirement(task, req_id):
 
     html = f"""
 <div class='env_req {req_status_html}'>
-  <label>{req_label}</label>
+  <a href='{req_res_url}'>{req_label}</a>
   {dep_html}
 </div>"""
 
@@ -113,3 +114,17 @@ def page_env_tree():
     tree_html, _ = render_requirement(task, task_target)
 
     return render_template('env_tree.html', tree_html=Markup(tree_html))
+
+@blueprint.route('/auto-res/<req_id>', methods=["GET"])
+@env_required
+def page_auto_res(req_id=None):
+    workspace = get_workspace()
+    env = workspace.get_environment(session["env_name"])
+    task = Task(workspace, env)
+
+    try:
+        req = task.get_requirement(req_id)
+        return render_template('env_auto_res.html', task=task, req=req)
+    except InvalidConfiguration:
+        flash("Unknown requirement {}".format(req_id), "error")
+        return redirect(url_for("env.page_env_tree"))

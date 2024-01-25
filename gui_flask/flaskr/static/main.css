@@ -27,6 +27,10 @@ body {
     padding: 5px;
 }
 
+.collapsible > div {
+    margin-left: 40px;
+}
+
 .collapsible > label {
     display: block;
     padding: 10px;
@@ -34,7 +38,7 @@ body {
 }
 
 .collapsible > input:checked + label + div {
-    display: initial;
+    display: revert;
 }
 
 .collapsible > label::before {
@@ -63,6 +67,7 @@ body {
 
 form ul {
     margin: 0;
+    padding: 0;
 }
 
 form li {
@@ -117,6 +122,15 @@ form select {
     background-color: #EEF2F7;
     height: 30px;
     padding-left: 15px;
+}
+
+/* *** Code block */
+
+.code_block {
+    border: 1px solid grey;
+    background-color: #E0E0E0;
+    padding: 5px;
+    display: inline-block;
 }
 
 /* *** Flash messages */
