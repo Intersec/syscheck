@@ -10,6 +10,8 @@ sys.path.append(
             os.path.dirname(
                 os.path.abspath(__file__)))))
 
+import gui_tools
+
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
@@ -36,6 +38,7 @@ def create_app(test_config=None):
 
     from . import env
     app.register_blueprint(env.blueprint)
+    app.jinja_env.filters['format_description'] = gui_tools.format_description
 
     from . import select_env
     app.register_blueprint(select_env.blueprint)

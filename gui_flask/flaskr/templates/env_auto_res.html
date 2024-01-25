@@ -1,5 +1,5 @@
 {% macro render_manual_resolution(id, resolution) -%}
-<span class="code_block">{{ resolution["description"] }}</span>
+<span class="code_block">{{ resolution["description"] | format_description(task) }}</span>
 {%- endmacro %}
 
 {% macro render_resolution(id, resolution) -%}

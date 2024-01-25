@@ -9,6 +9,7 @@ TESTS := \
 	test_requirements \
 	test_git_tools \
 	test_db_tools \
+	test_gui_tools \
 
 all: tests
 
