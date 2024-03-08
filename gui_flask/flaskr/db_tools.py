@@ -108,7 +108,7 @@ def page_db_tools():
 
     workspace = get_workspace()
 
-    if session["env_name"]:
+    if session.get("env_name"):
         env = workspace.get_environment(session["env_name"])
         env_kv_db = env.key_value_db
         env_collection_db = env.collection_db
