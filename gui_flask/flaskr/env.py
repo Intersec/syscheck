@@ -158,7 +158,9 @@ def render_dependencies(task, dep_arg, next_tree_id):
 def render_requirement(task, req_id, next_tree_id):
     req = task.get_requirement(req_id)
     req_label = req['label']
-    req_res_url = url_for('env.page_auto_res', req_id=req_id)
+    req_res_url = url_for('env.page_auto_res',
+                          req_id=req_id,
+                          tree_id=next_tree_id)
 
     req_fulfilled = task.check_requirement_status(req)
 
@@ -211,6 +213,7 @@ def page_auto_res(req_id=None):
     workspace = get_workspace()
     env = workspace.get_environment(session["env_name"])
     task = Task(workspace, env)
+    tree_id = None
 
     if request.method == "GET":
         if request.args.get("run_auto_res"):
@@ -225,9 +228,13 @@ def page_auto_res(req_id=None):
             if set_value_from_user(task, req_id):
                 return redirect(url_for("env.page_auto_res", req_id=req_id))
 
+        if request.args.get("tree_id"):
+            tree_id = 'tree-id-' + request.args.get("tree_id")
+
     try:
         req = task.get_requirement(req_id)
-        return render_template('env_auto_res.html', task=task, req=req)
+        return render_template('env_auto_res.html', task=task, req=req,
+                               tree_id=tree_id)
     except InvalidConfiguration:
         flash("Unknown requirement {}".format(req_id), "error")
         return redirect(url_for("env.page_env_tree"))
