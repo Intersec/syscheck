@@ -19,6 +19,22 @@ class NotAbsolute(Exception):
 
 class Task():
     def __init__(self, workspace, environment):
+        def register_requirements(requirements):
+            self.requirements = {}
+            for req in requirements:
+                if req["id"] in self.requirements:
+                    raise DupplicateReq(req["id"])
+                self.requirements[req["id"]] = req
+
+        def update_system_path_for_libraries(task_json):
+            if task_json.get("libraries_paths"):
+                lib_paths = task_json["libraries_paths"]
+                for path in lib_paths:
+                    if not os.path.isabs(path):
+                        path = os.path.join(task_file_directory, path)
+                    if not path in sys.path:
+                        sys.path.append(path)
+
         self.workspace = workspace
         self.environment = environment
 
@@ -26,11 +42,12 @@ class Task():
             # At this time, the environment is created by the workspace and
             # this environment should contain in the KeyValueDatabase the path
             # to the task configuration file.
-            raise AssertionError(f"missing key 'task_conf_path' in kv database")
+            raise AssertionError(
+                f"missing key 'task_conf_path' in kv database")
 
         task_file = self.environment.key_value_db.get_value("task_conf_path")
         if not os.path.isabs(task_file):
-            # The path in the databse should be absolute. At this time, the
+            # The path in the database should be absolute. At this time, the
             # Workspace class is the only class that can create environment,
             # and thus, it's databases. It should have made sure that the path
             # was absolute.
@@ -49,7 +66,8 @@ class Task():
 
         requirements_file = task_json["requirements_file"]
         if not os.path.isabs(requirements_file):
-            requirements_file = os.path.join(task_file_directory, requirements_file)
+            requirements_file = os.path.join(task_file_directory,
+                                             requirements_file)
 
         try:
             with open(requirements_file) as json_file:
@@ -57,21 +75,12 @@ class Task():
         except FileNotFoundError:
             # Clean file path for the error message.
             requirements_file = os.path.normpath(requirements_file)
-            raise FileNotFoundError(f"Requirements file '{requirements_file}' not found")
+            raise FileNotFoundError(
+                f"Requirements file '{requirements_file}' not found")
 
-        self.requirements = {}
-        for requirement in requirements:
-            if requirement["id"] in self.requirements:
-                raise DupplicateRequirement(requirement["id"])
-            self.requirements[requirement["id"]] = requirement
+        register_requirements(requirements)
 
-        if task_json.get("libraries_paths"):
-            lib_paths = task_json["libraries_paths"]
-            for path in lib_paths:
-                if not os.path.isabs(path):
-                    path = os.path.join(task_file_directory, path)
-                if not path in sys.path:
-                    sys.path.append(path)
+        update_system_path_for_libraries(task_json)
 
     def get_target_requirement_name(self):
         return self.target_requirement_name
