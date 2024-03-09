@@ -93,7 +93,8 @@ def set_value_from_user(task, req_id):
 
     return True
 
-def render_dep_list(task, dep_list):
+def render_dep_list(task, dep_list, next_tree_id):
+    nodes_nr = 0
     method = dep_list[0]
     if method not in ["each", "any"]:
         raise InvalidConfiguration("Unknown method", method)
@@ -103,10 +104,12 @@ def render_dep_list(task, dep_list):
     dep_html = ""
     dep_status = []
     for dep in dependencies:
-        # dep_html = dep_html + render_requirement(task, dep)
-        single_html, single_status = render_dependencies(task, dep)
+        single_html, single_status, single_nodes_nr = (
+            render_dependencies(task, dep, next_tree_id) )
         dep_html = dep_html + single_html
         dep_status.append(single_status)
+        next_tree_id += single_nodes_nr
+        nodes_nr += single_nodes_nr
 
     if method == "each":
         if False in dep_status:
@@ -131,25 +134,28 @@ def render_dep_list(task, dep_list):
   {dep_html}
 </fieldset>"""
 
-    return html, dep_list_fulfilled
+    return html, dep_list_fulfilled, nodes_nr
 
-def render_dependencies(task, dep_arg):
+def render_dependencies(task, dep_arg, next_tree_id):
     dependencies_fulfilled = False
+    nodes_nr = 0
 
     if not dep_arg:
         html = ""
         fulfilled = True
 
     elif type(dep_arg) is str:
-        dep_html, fulfilled = render_requirement(task, dep_arg)
+        dep_html, fulfilled, nodes_nr = render_requirement(task, dep_arg,
+                                                           next_tree_id)
         html = f"<div class='dep'>{dep_html}</div>"
 
     elif type(dep_arg) is list:
-        html, fulfilled = render_dep_list(task, dep_arg)
+        html, fulfilled, nodes_nr = render_dep_list(task, dep_arg,
+                                                    next_tree_id)
 
-    return html, fulfilled
+    return html, fulfilled, nodes_nr
 
-def render_requirement(task, req_id):
+def render_requirement(task, req_id, next_tree_id):
     req = task.get_requirement(req_id)
     req_label = req['label']
     req_res_url = url_for('env.page_auto_res', req_id=req_id)
@@ -161,15 +167,18 @@ def render_requirement(task, req_id):
     else:
         req_status_html = "req_not_fulfilled"
 
-    dep_html, _ = render_dependencies(task, req.get('dependencies'))
+    dep_html, _, nodes_nr = render_dependencies(task,
+                                                req.get('dependencies'),
+                                                next_tree_id)
+    nodes_nr += 1               # Count the current node
 
     html = f"""
-<div class='env_req {req_status_html}'>
+<div id=tree-id-{next_tree_id} class='env_req {req_status_html}'>
   <a href='{req_res_url}'>{req_label}</a>
   {dep_html}
 </div>"""
 
-    return html, req_fulfilled
+    return html, req_fulfilled, nodes_nr
 
 def env_required(view):
     @functools.wraps(view)
@@ -192,7 +201,7 @@ def page_env_tree():
     env = workspace.get_environment(session["env_name"])
     task = Task(workspace, env)
     task_target = task.get_target_requirement_name()
-    tree_html, _ = render_requirement(task, task_target)
+    tree_html, _, _ = render_requirement(task, task_target, 0)
 
     return render_template('env_tree.html', tree_html=Markup(tree_html))
 
