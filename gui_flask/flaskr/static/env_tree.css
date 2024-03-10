@@ -31,3 +31,13 @@
 #env_tree fieldset.req_not_fulfilled > legend {
     color: red;
 }
+
+#env_tree .env_req.req_collapsed {
+    background-color: #CCC;
+}
+
+#env_tree .env_req.req_collapsed a::after {
+    content: '>';
+    padding: 0px 20px;
+    color: black;
+}

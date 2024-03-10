@@ -146,7 +146,8 @@ def render_dependencies(task, dep_arg, next_tree_id):
 
     elif type(dep_arg) is str:
         dep_html, fulfilled, nodes_nr = render_requirement(task, dep_arg,
-                                                           next_tree_id)
+                                                           next_tree_id,
+                                                           False)
         html = f"<div class='dep'>{dep_html}</div>"
 
     elif type(dep_arg) is list:
@@ -155,28 +156,40 @@ def render_dependencies(task, dep_arg, next_tree_id):
 
     return html, fulfilled, nodes_nr
 
-def render_requirement(task, req_id, next_tree_id):
+def render_requirement(task, req_id, next_tree_id, first_call):
     req = task.get_requirement(req_id)
     req_label = req['label']
-    req_res_url = url_for('env.page_auto_res',
+    do_collapse = (req.get('collapse') == True) and (not first_call)
+    dep_html = ""
+    nodes_nr = 0
+
+    if do_collapse:
+        req_url = url_for('env.page_env_tree',
+                          req_id=req_id,
+                          tree_id=next_tree_id)
+    else:
+        req_url = url_for('env.page_auto_res',
                           req_id=req_id,
                           tree_id=next_tree_id)
 
     req_fulfilled = task.check_requirement_status(req)
 
     if req_fulfilled:
-        req_status_html = "req_fulfilled"
+        status_html = "req_fulfilled"
     else:
-        req_status_html = "req_not_fulfilled"
+        status_html = "req_not_fulfilled"
 
-    dep_html, _, nodes_nr = render_dependencies(task,
-                                                req.get('dependencies'),
-                                                next_tree_id)
+    if not do_collapse:
+        dep_html, _, nodes_nr = render_dependencies(task,
+                                                    req.get('dependencies'),
+                                                    next_tree_id)
+
     nodes_nr += 1               # Count the current node
 
+    collapse_html = 'req_collapsed' if do_collapse else ''
     html = f"""
-<div id=tree-id-{next_tree_id} class='env_req {req_status_html}'>
-  <a href='{req_res_url}'>{req_label}</a>
+<div id=tree-id-{next_tree_id} class='env_req {status_html} {collapse_html}'>
+  <a href='{req_url}'>{req_label}</a>
   {dep_html}
 </div>"""
 
@@ -202,8 +215,13 @@ def page_env_tree():
     workspace = get_workspace()
     env = workspace.get_environment(session["env_name"])
     task = Task(workspace, env)
-    task_target = task.get_target_requirement_name()
-    tree_html, _, _ = render_requirement(task, task_target, 0)
+
+    if request.args.get("req_id"):
+        target = request.args.get("req_id")
+    else:
+        target = task.get_target_requirement_name()
+
+    tree_html, _, _ = render_requirement(task, target, 0, True)
 
     return render_template('env_tree.html', tree_html=Markup(tree_html))
 
