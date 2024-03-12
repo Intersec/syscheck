@@ -8,6 +8,7 @@ from flask import (Blueprint,
                    request,
                    redirect)
 import db_tools
+from .breadcrumb import Breadcrumb
 from markupsafe import Markup
 from task import Task, InvalidConfiguration
 from workspace import get_workspace
@@ -93,7 +94,7 @@ def set_value_from_user(task, req_id):
 
     return True
 
-def render_dep_list(task, dep_list, next_tree_id):
+def render_dep_list(task, dep_list, next_tree_id, breadcrumb):
     nodes_nr = 0
     method = dep_list[0]
     if method not in ["each", "any"]:
@@ -105,7 +106,7 @@ def render_dep_list(task, dep_list, next_tree_id):
     dep_status = []
     for dep in dependencies:
         single_html, single_status, single_nodes_nr = (
-            render_dependencies(task, dep, next_tree_id) )
+            render_dependencies(task, dep, next_tree_id, breadcrumb) )
         dep_html = dep_html + single_html
         dep_status.append(single_status)
         next_tree_id += single_nodes_nr
@@ -136,7 +137,7 @@ def render_dep_list(task, dep_list, next_tree_id):
 
     return html, dep_list_fulfilled, nodes_nr
 
-def render_dependencies(task, dep_arg, next_tree_id):
+def render_dependencies(task, dep_arg, next_tree_id, breadcrumb):
     dependencies_fulfilled = False
     nodes_nr = 0
 
@@ -147,30 +148,32 @@ def render_dependencies(task, dep_arg, next_tree_id):
     elif type(dep_arg) is str:
         dep_html, fulfilled, nodes_nr = render_requirement(task, dep_arg,
                                                            next_tree_id,
+                                                           breadcrumb,
                                                            False)
         html = f"<div class='dep'>{dep_html}</div>"
 
     elif type(dep_arg) is list:
         html, fulfilled, nodes_nr = render_dep_list(task, dep_arg,
-                                                    next_tree_id)
+                                                    next_tree_id, breadcrumb)
 
     return html, fulfilled, nodes_nr
 
-def render_requirement(task, req_id, next_tree_id, first_call):
+def render_requirement(task, req_id, next_tree_id, breadcrumb, first_call):
     req = task.get_requirement(req_id)
     req_label = req['label']
     do_collapse = (req.get('collapse') == True) and (not first_call)
     dep_html = ""
     nodes_nr = 0
+    prev_arg = breadcrumb.get_next_corridor(next_tree_id)
 
     if do_collapse:
         req_url = url_for('env.page_env_tree',
                           req_id=req_id,
-                          tree_id=next_tree_id)
+                          prev=prev_arg)
     else:
         req_url = url_for('env.page_auto_res',
                           req_id=req_id,
-                          tree_id=next_tree_id)
+                          prev=prev_arg)
 
     req_fulfilled = task.check_requirement_status(req)
 
@@ -182,7 +185,8 @@ def render_requirement(task, req_id, next_tree_id, first_call):
     if not do_collapse:
         dep_html, _, nodes_nr = render_dependencies(task,
                                                     req.get('dependencies'),
-                                                    next_tree_id)
+                                                    next_tree_id,
+                                                    breadcrumb)
 
     nodes_nr += 1               # Count the current node
 
@@ -221,9 +225,13 @@ def page_env_tree():
     else:
         target = task.get_target_requirement_name()
 
-    tree_html, _, _ = render_requirement(task, target, 0, True)
+    breadcrumb = Breadcrumb(request.args.get("prev"))
+    breadcrumb.prepare_next_corridor(target)
 
-    return render_template('env_tree.html', tree_html=Markup(tree_html))
+    tree_html, _, _ = render_requirement(task, target, 0, breadcrumb, True)
+
+    return render_template('env_tree.html',
+                           tree_html=Markup(tree_html), breadcrumb=breadcrumb)
 
 @blueprint.route('/auto-res/<req_id>', methods=["GET"])
 @env_required
@@ -231,7 +239,6 @@ def page_auto_res(req_id=None):
     workspace = get_workspace()
     env = workspace.get_environment(session["env_name"])
     task = Task(workspace, env)
-    tree_id = None
 
     if request.method == "GET":
         if request.args.get("run_auto_res"):
@@ -246,13 +253,12 @@ def page_auto_res(req_id=None):
             if set_value_from_user(task, req_id):
                 return redirect(url_for("env.page_auto_res", req_id=req_id))
 
-        if request.args.get("tree_id"):
-            tree_id = 'tree-id-' + request.args.get("tree_id")
+        breadcrumb = Breadcrumb(request.args.get("prev"))
 
     try:
         req = task.get_requirement(req_id)
         return render_template('env_auto_res.html', task=task, req=req,
-                               tree_id=tree_id)
+                               breadcrumb=breadcrumb)
     except InvalidConfiguration:
         flash("Unknown requirement {}".format(req_id), "error")
         return redirect(url_for("env.page_env_tree"))

@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% block links %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='env.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='env_tree.css') }}">
 {% endblock %}
 
@@ -9,6 +10,13 @@
 {% endblock %}
 
 {% block content %}
+  {% if breadcrumb.prev_tree_id %}
+    {% set tree_id = 'tree-id-' + breadcrumb.prev_tree_id %}
+  {% else %}
+    {% set tree_id = None %}
+  {% endif %}
+
+  <a id="env_back_to_parent" href="{{ url_for('env.page_env_tree', _anchor=tree_id, req_id=breadcrumb.prev_req_id, prev=breadcrumb.prev_str) }}">Back to parent</a>
   <div id="env_tree" class="tile">
     {{ tree_html }}
   </div>
