@@ -15,6 +15,12 @@ from workspace import get_workspace
 
 blueprint = Blueprint('env', __name__, url_prefix='/env')
 
+def get_tree_anchor(tree_id):
+    if tree_id:
+        return 'tree-id-{}'.format(tree_id)
+    else:
+        return None
+
 def run_auto_res(task, req_id):
     success = False
     res_id = request.args.get("res_id")
@@ -158,22 +164,54 @@ def render_dependencies(task, dep_arg, next_tree_id, breadcrumb):
 
     return html, fulfilled, nodes_nr
 
+def get_auto_res_form(req_id, res_id, res_label, prev_arg):
+    html = (
+        "<form>"
+        "  <input type='hidden' name='prev' value='{prev_arg}'/>"
+        "  <input type='hidden' name='req_id' value='{req_id}'/>"
+        "  <input type='hidden' name='res_id' value='{res_id}'/>"
+        "  <input type='submit' name='run_auto_res' value='{res_label}'/>"
+        "</form>".format(prev_arg=prev_arg, req_id=req_id,
+                         res_id=res_id, res_label=res_label))
+    return html
+
+def render_quick_auto_res(req, prev_arg):
+    html = ""
+
+    resolutions = req.get("resolution")
+    if not resolutions:
+        return html
+
+    for res_id in resolutions:
+        res = resolutions[res_id]
+        if res.get("method") == "automatic":
+            if res.get("quick-access") == True:
+                html += get_auto_res_form(req["id"], res_id,
+                                          res["label"], prev_arg)
+
+    return html
+
 def render_requirement(task, req_id, next_tree_id, breadcrumb, first_call):
     req = task.get_requirement(req_id)
     req_label = req['label']
     do_collapse = (req.get('collapse') == True) and (not first_call)
     dep_html = ""
+    quick_res_html = ""
     nodes_nr = 0
-    prev_arg = breadcrumb.get_next_corridor(next_tree_id)
+    next_corridor = breadcrumb.get_next_corridor(next_tree_id)
 
     if do_collapse:
         req_url = url_for('env.page_env_tree',
                           req_id=req_id,
-                          prev=prev_arg)
+                          prev=next_corridor)
     else:
         req_url = url_for('env.page_auto_res',
                           req_id=req_id,
-                          prev=prev_arg)
+                          prev=next_corridor)
+
+        # Display the quick resolutions only if the requirement is not
+        # collapsed
+        quick_res_html = render_quick_auto_res(req, next_corridor)
 
     req_fulfilled = task.check_requirement_status(req)
 
@@ -194,6 +232,7 @@ def render_requirement(task, req_id, next_tree_id, breadcrumb, first_call):
     html = f"""
 <div id=tree-id-{next_tree_id} class='env_req {status_html} {collapse_html}'>
   <a href='{req_url}'>{req_label}</a>
+  {quick_res_html}
   {dep_html}
 </div>"""
 
@@ -227,6 +266,15 @@ def page_env_tree():
 
     breadcrumb = Breadcrumb(request.args.get("prev"))
     breadcrumb.prepare_next_corridor(target)
+
+    # Case where the user used a quick automatic resolution
+    if request.args.get("run_auto_res"):
+        if run_auto_res(task, target):
+            tree_anchor = get_tree_anchor(breadcrumb.prev_tree_id)
+            return redirect(url_for("env.page_env_tree",
+                                    _anchor=tree_anchor,
+                                    req_id=breadcrumb.prev_req_id,
+                                    prev=breadcrumb.prev_str))
 
     tree_html, _, _ = render_requirement(task, target, 0, breadcrumb, True)
 

@@ -14,14 +14,17 @@
     padding: 0 0 5px 10px;
 }
 
+#env_tree .env_req > a {
+    text-decoration: none;
+    margin-right: 20px;
+}
+
 #env_tree .env_req.req_fulfilled > a {
     color: green;
-    text-decoration: none;
 }
 
 #env_tree .env_req.req_not_fulfilled > a {
     color: red;
-    text-decoration: none;
 }
 
 #env_tree fieldset.req_fulfilled > legend {
@@ -40,4 +43,13 @@
     content: '>';
     padding: 0px 20px;
     color: black;
+}
+
+#env_tree .env_req > form {
+    display: inline;
+}
+
+#env_tree .env_req > form input[type="submit"] {
+    margin-left: 0;
+    width: initial;
 }
