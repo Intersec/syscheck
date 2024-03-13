@@ -287,21 +287,24 @@ def page_auto_res(req_id=None):
     workspace = get_workspace()
     env = workspace.get_environment(session["env_name"])
     task = Task(workspace, env)
+    breadcrumb = Breadcrumb(request.args.get("prev"))
 
     if request.method == "GET":
+
         if request.args.get("run_auto_res"):
             if run_auto_res(task, req_id):
-                return redirect(url_for("env.page_auto_res", req_id=req_id))
+                return redirect(url_for("env.page_auto_res", req_id=req_id,
+                                        prev=breadcrumb.orig_str))
 
         if request.args.get("set_value"):
             if set_value_from_user(task, req_id):
-                return redirect(url_for("env.page_auto_res", req_id=req_id))
+                return redirect(url_for("env.page_auto_res", req_id=req_id,
+                                        prev=breadcrumb.orig_str))
 
         if request.args.get("user_select_submit"):
             if set_value_from_user(task, req_id):
-                return redirect(url_for("env.page_auto_res", req_id=req_id))
-
-        breadcrumb = Breadcrumb(request.args.get("prev"))
+                return redirect(url_for("env.page_auto_res", req_id=req_id,
+                                        prev=breadcrumb.orig_str))
 
     try:
         req = task.get_requirement(req_id)

@@ -10,6 +10,9 @@
     <pre>{{ resolution["steps"] | jsonify }}</pre>
   </div>
   <form>
+    {% if breadcrumb.orig_str %}
+    <input type="hidden" name="prev" value="{{breadcrumb.orig_str}}">
+    {% endif %}
     <input type="hidden" name="res_id" value="{{id}}">
     <input type="submit" name="run_auto_res" value="Start automatic resolution"/>
   </form>
