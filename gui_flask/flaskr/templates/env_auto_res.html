@@ -20,6 +20,9 @@
 
 {% macro render_user_input_resolution(id, resolution) -%}
   <form>
+    {% if breadcrumb.orig_str %}
+    <input type="hidden" name="prev" value="{{breadcrumb.orig_str}}">
+    {% endif %}
     <input type="hidden" name="res_id" value="{{id}}">
     <ul>
       <li>
