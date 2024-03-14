@@ -15,6 +15,12 @@ from workspace import get_workspace
 
 blueprint = Blueprint('env', __name__, url_prefix='/env')
 
+def append_class(classes, new_class):
+    if len(classes) > 0:
+        return "{} {}".format(classes, new_class)
+    else:
+        return new_class
+
 def get_tree_anchor(tree_id):
     if tree_id:
         return 'tree-id-{}'.format(tree_id)
@@ -175,6 +181,18 @@ def get_auto_res_form(req_id, res_id, res_label, prev_arg):
                          res_id=res_id, res_label=res_label))
     return html
 
+def check_only_manual_resolutions(req):
+    resolutions = req.get("resolution")
+    if not resolutions:
+        return True
+
+    for res_id in resolutions:
+        res = resolutions[res_id]
+        if res["method"] != "ui.manual":
+            return False
+
+    return True
+
 def render_quick_auto_res(req, prev_arg):
     html = ""
 
@@ -196,6 +214,7 @@ def render_requirement(task, req_id, next_tree_id, breadcrumb, first_call):
     req_label = req['label']
     do_collapse = (req.get('collapse') == True) and (not first_call)
     dep_html = ""
+    classes_html = "env_req"
     quick_res_html = ""
     nodes_nr = 0
     next_corridor = breadcrumb.get_next_corridor(next_tree_id)
@@ -204,6 +223,8 @@ def render_requirement(task, req_id, next_tree_id, breadcrumb, first_call):
         req_url = url_for('env.page_env_tree',
                           req_id=req_id,
                           prev=next_corridor)
+        classes_html = append_class(classes_html, "req_collapsed")
+
     else:
         req_url = url_for('env.page_auto_res',
                           req_id=req_id,
@@ -216,9 +237,12 @@ def render_requirement(task, req_id, next_tree_id, breadcrumb, first_call):
     req_fulfilled = task.check_requirement_status(req)
 
     if req_fulfilled:
-        status_html = "req_fulfilled"
+        classes_html = append_class(classes_html, "req_fulfilled")
     else:
-        status_html = "req_not_fulfilled"
+        classes_html = append_class(classes_html, "req_not_fulfilled")
+
+    if check_only_manual_resolutions(req) == True:
+        classes_html = append_class(classes_html, "req_dead_end")
 
     if not do_collapse:
         dep_html, _, nodes_nr = render_dependencies(task,
@@ -228,9 +252,8 @@ def render_requirement(task, req_id, next_tree_id, breadcrumb, first_call):
 
     nodes_nr += 1               # Count the current node
 
-    collapse_html = 'req_collapsed' if do_collapse else ''
     html = f"""
-<div id=tree-id-{next_tree_id} class='env_req {status_html} {collapse_html}'>
+<div id=tree-id-{next_tree_id} class='{classes_html}'>
   <a href='{req_url}'>{req_label}</a>
   {quick_res_html}
   {dep_html}

@@ -53,3 +53,9 @@
     margin-left: 0;
     width: initial;
 }
+
+#env_tree .env_req.req_dead_end > a::after {
+    content: "[x]";
+    padding: 0px 20px;
+    color: black;
+}
