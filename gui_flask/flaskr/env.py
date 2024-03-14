@@ -292,12 +292,12 @@ def page_env_tree():
 
     # Case where the user used a quick automatic resolution
     if request.args.get("run_auto_res"):
-        if run_auto_res(task, target):
-            tree_anchor = get_tree_anchor(breadcrumb.prev_tree_id)
-            return redirect(url_for("env.page_env_tree",
-                                    _anchor=tree_anchor,
-                                    req_id=breadcrumb.prev_req_id,
-                                    prev=breadcrumb.prev_str))
+        tree_anchor = get_tree_anchor(breadcrumb.prev_tree_id)
+        run_auto_res(task, target)
+        return redirect(url_for("env.page_env_tree",
+                                _anchor=tree_anchor,
+                                req_id=breadcrumb.prev_req_id,
+                                prev=breadcrumb.prev_str))
 
     tree_html, _, _ = render_requirement(task, target, 0, breadcrumb, True)
 
@@ -314,20 +314,23 @@ def page_auto_res(req_id=None):
 
     if request.method == "GET":
 
+        do_redirect = False
+
         if request.args.get("run_auto_res"):
-            if run_auto_res(task, req_id):
-                return redirect(url_for("env.page_auto_res", req_id=req_id,
-                                        prev=breadcrumb.orig_str))
+            run_auto_res(task, req_id)
+            do_redirect = True
 
         if request.args.get("set_value"):
-            if set_value_from_user(task, req_id):
-                return redirect(url_for("env.page_auto_res", req_id=req_id,
-                                        prev=breadcrumb.orig_str))
+            set_value_from_user(task, req_id)
+            do_redirect = True
 
         if request.args.get("user_select_submit"):
-            if set_value_from_user(task, req_id):
-                return redirect(url_for("env.page_auto_res", req_id=req_id,
-                                        prev=breadcrumb.orig_str))
+            set_value_from_user(task, req_id)
+            do_redirect = True
+
+        if do_redirect:
+            return redirect(url_for("env.page_auto_res", req_id=req_id,
+                                    prev=breadcrumb.orig_str))
 
     try:
         req = task.get_requirement(req_id)
