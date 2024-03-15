@@ -170,15 +170,17 @@ def render_dependencies(task, dep_arg, next_tree_id, breadcrumb):
 
     return html, fulfilled, nodes_nr
 
-def get_auto_res_form(req_id, res_id, res_label, prev_arg):
+def get_auto_res_form(req_id, res_id, res_label, enable_button, prev_arg):
+    disable = "" if enable_button else "disabled=''"
+
     html = (
         "<form>"
         "  <input type='hidden' name='prev' value='{prev_arg}'/>"
         "  <input type='hidden' name='req_id' value='{req_id}'/>"
         "  <input type='hidden' name='res_id' value='{res_id}'/>"
-        "  <input type='submit' name='run_auto_res' value='{res_label}'/>"
+        "  <input type='submit' {block} name='run_auto_res' value='{label}'/>"
         "</form>".format(prev_arg=prev_arg, req_id=req_id,
-                         res_id=res_id, res_label=res_label))
+                         res_id=res_id, block=disable, label=res_label))
     return html
 
 def check_only_manual_resolutions(req):
@@ -193,7 +195,7 @@ def check_only_manual_resolutions(req):
 
     return True
 
-def render_quick_auto_res(req, prev_arg):
+def render_quick_auto_res(req, dep_status, prev_arg):
     html = ""
 
     resolutions = req.get("resolution")
@@ -204,8 +206,12 @@ def render_quick_auto_res(req, prev_arg):
         res = resolutions[res_id]
         if res.get("method") == "automatic":
             if res.get("quick-access") == True:
-                html += get_auto_res_form(req["id"], res_id,
-                                          res["label"], prev_arg)
+                enable_button = False
+                if dep_status == True or res.get("safe") == True:
+                    enable_button = True
+
+                html += get_auto_res_form(req["id"], res_id, res["label"],
+                                          enable_button, prev_arg)
 
     return html
 
@@ -232,7 +238,8 @@ def render_requirement(task, req_id, next_tree_id, breadcrumb, first_call):
 
         # Display the quick resolutions only if the requirement is not
         # collapsed
-        quick_res_html = render_quick_auto_res(req, next_corridor)
+        dep_status = task.check_requirement_dependencies(req)
+        quick_res_html = render_quick_auto_res(req, dep_status, next_corridor)
 
     req_fulfilled = task.check_requirement_status(req)
 
