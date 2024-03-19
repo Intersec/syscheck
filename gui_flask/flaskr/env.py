@@ -254,7 +254,7 @@ def render_requirement(task, req_id, next_tree_id, breadcrumb, first_call):
     if not do_collapse:
         dep_html, _, nodes_nr = render_dependencies(task,
                                                     req.get('dependencies'),
-                                                    next_tree_id,
+                                                    next_tree_id + 1,
                                                     breadcrumb)
 
     nodes_nr += 1               # Count the current node
