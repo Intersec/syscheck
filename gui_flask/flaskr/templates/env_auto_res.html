@@ -2,7 +2,12 @@
 {% from 'base.html' import render_collapsible_element with context %}
 
 {% macro render_manual_resolution(id, resolution) -%}
-  <pre>{{ resolution["description"] | format_description(task) }}</pre>
+  {# The <div> before and after the <pre> fixes the three-click-copy on
+     Firefox. Without the <div> tags, when the user triple-click on the text
+     inside the <pre> tag, the browser will select whitespaces and line
+     endings before and after the text.
+  #}
+  <div></div><pre>{{ resolution["description"] | format_description(task) }}</pre><div></div>
 {%- endmacro %}
 
 {% macro render_auto_resolution(id, resolution) -%}
