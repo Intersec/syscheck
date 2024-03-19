@@ -59,3 +59,9 @@
     padding: 0px 20px;
     color: black;
 }
+
+.req_poped_up > a {
+    background-color: #FD08;
+    padding: 2px 10px 2px 10px;
+    border-radius: 10px;
+}
